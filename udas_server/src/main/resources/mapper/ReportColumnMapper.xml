@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.report.mapper.ReportColumnMapper">
+
+    <select id="selectByReportCode" parameterType="java.lang.String" resultType="com.boshz.udas.report.entity.ReportColumn">
+        select id, report_code, column_name, column_label,column_type, is_list, is_query
+        from tb_report_column
+        where report_code = #{reportCode}
+    </select>
+
+    <!-- 插入字段配置 -->
+    <insert id="insert" parameterType="com.boshz.udas.report.entity.ReportColumn">
+        INSERT INTO tb_report_column (
+            report_code,
+            column_name,
+            column_label,
+            column_type,
+            is_list,
+            is_query
+        ) VALUES (
+                     #{reportCode},
+                     #{columnName},
+                     #{columnLabel},
+                     #{columnType},
+                     #{isList},
+                     #{isQuery}
+                 )
+    </insert>
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boshz.udas.report.mapper.ReportCommonMapper">
+
+    <!-- 分页查询 -->
+    <select id="selectPageList" resultType="java.util.Map">
+        select ${columns}
+        from ${tableName}
+        where ${whereSql}
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- 统计总数 -->
+    <select id="selectCount" resultType="long">
+        select count(1)
+        from ${tableName}
+        where ${whereSql}
+    </select>
+
+    <!-- 单条查询 -->
+    <select id="getById" resultType="java.util.Map">
+        select * from ${tableName} where id = #{id}
+    </select>
+
+    <!-- 通用新增 -->
+    <insert id="insert">
+        insert into ${tableName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <foreach collection="data.keys" item="key">
+                ${key},
+            </foreach>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <foreach collection="data.keys" item="key">
+                #{data.${key}},
+            </foreach>
+        </trim>
+    </insert>
+
+    <!-- 通用修改 -->
+    <update id="update">
+        update ${tableName}
+        <set>
+            <foreach collection="data.keys" item="key">
+                <if test="key != 'id'">
+                    ${key} = #{data.${key}},
+                </if>
+            </foreach>
+        </set>
+        where id = #{data.id}
+    </update>
+
+    <!-- 通用删除 -->
+    <delete id="deleteById">
+        delete from ${tableName} where id = #{id}
+    </delete>
+
+    <update id="createTable">
+        ${sql}
+    </update>
+
+</mapper>
