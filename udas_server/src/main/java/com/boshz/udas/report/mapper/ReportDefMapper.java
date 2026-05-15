@@ -15,4 +15,8 @@ public interface ReportDefMapper {
     int insert(ReportDef reportDef);
 
     int countByCodePrefix(@Param("prefix") String prefix);
+
+    List<ReportDef> selectReportList(String reportName, int offset, Integer pageSize);
+
+    int selectReportCount(String reportName);
 }

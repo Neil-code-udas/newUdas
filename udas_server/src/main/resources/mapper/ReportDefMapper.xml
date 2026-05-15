@@ -17,6 +17,7 @@
     <select id="countByCodePrefix" resultType="int">
         select count(*) from tb_report_def where report_code like concat(#{prefix},'%')
     </select>
+    <select id="selectReportList" resultType="com.boshz.udas.report.entity.ReportDef"></select>
 
     <!-- 插入 -->
     <insert id="insert" parameterType="com.boshz.udas.report.entity.ReportDef">
