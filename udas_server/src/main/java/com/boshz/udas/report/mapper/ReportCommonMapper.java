@@ -49,6 +49,14 @@ public interface ReportCommonMapper {
             @Param("id") Long id
     );
 
+    /**
+     * 通用逻辑删除
+     * @param tableName 表名
+     * @param id 主键ID
+     */
+    void logicDelete(@Param("tableName") String tableName,
+                     @Param("id") Long id);
+
     // ===================== 自动建表（你最新功能） =====================
     void createTable(@Param("sql") String sql);
 

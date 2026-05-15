@@ -3,6 +3,7 @@ package com.boshz.udas.report.service;
 import com.boshz.udas.report.entity.ReportColumn;
 import com.boshz.udas.vo.PageVo;
 import com.boshz.udas.vo.QueryEntity;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,11 +23,19 @@ public interface ReportCommonService {
     // 新增CRUD
     Map<String, Object> get(String code, Long id);
 
-    int add(String code, Map<String, Object> data);
+    int add(String code, Map<String, Object> data,String account);
 
     int update(String code, Map<String, Object> data);
 
     int delete(String code, Long id);
+
+    /**
+     * 通用逻辑删除
+     * @param tableName 表名
+     * @param id 主键ID
+     */
+    void logicDelete(@Param("tableName") String tableName,
+                     @Param("id") Long id);
 
 
     String createAndSaveTable(String reportName, List<ReportColumn> columns);

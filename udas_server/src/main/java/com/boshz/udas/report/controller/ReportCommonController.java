@@ -49,9 +49,10 @@ public class ReportCommonController {
     @PostMapping("/add")
     public ResultVO<Integer> add(
             @RequestParam String code,
-            @RequestBody Map<String, Object> data
+            @RequestBody Map<String, Object> data,
+            @RequestParam String account
     ) {
-        return ResultVOUtil.success(reportCommonService.add(code, data));
+        return ResultVOUtil.success(reportCommonService.add(code, data,account));
     }
 
     // 修改
@@ -72,6 +73,17 @@ public class ReportCommonController {
         return ResultVOUtil.success(reportCommonService.delete(code, id));
     }
 
+    /**
+     * 数智台账 - 通用数据逻辑删除
+     */
+    @PostMapping("/logicDelete")
+    public ResultVO<String> logicDelete(
+            @RequestParam String reportCode,
+            @RequestParam Long id) {
+
+        reportCommonService.logicDelete(reportCode, id);
+        return ResultVOUtil.success("删除成功");
+    }
 
     // 1. 下载 Excel 模板
     @GetMapping("/downloadTemplate")
@@ -132,6 +144,15 @@ public class ReportCommonController {
         return ResultVOUtil.success(reportColumns);
     }
 
+
+    /*
+    通过excel建表，暂时舍弃，excel改为仅表头
+     */
+    @PostMapping("/createTable")
+    public ResultVO createTable(@RequestBody  List<ReportColumn> columns, @RequestParam("reportName") String reportName) {
+        String result = reportCommonService.createAndSaveTable(reportName, columns);
+        return ResultVOUtil.success(result);
+    }
 
 }
 

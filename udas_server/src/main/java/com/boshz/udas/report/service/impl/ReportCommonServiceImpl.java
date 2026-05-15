@@ -1,5 +1,7 @@
 package com.boshz.udas.report.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
@@ -104,8 +106,14 @@ public class ReportCommonServiceImpl implements ReportCommonService {
      * 通用新增
      */
     @Override
-    public int add(String code, Map<String, Object> data) {
+    public int add(String code, Map<String, Object> data,String account) {
         ReportDef def = reportDefMapper.selectByCode(code);
+        data.put("org_code","org_code");
+        data.put("org_name","org_name");
+        data.put("create_by", account);
+        data.put("update_by", account);
+//        data.put("create_time", new Date());
+//        data.put("update_time", new Date());
         return reportCommonMapper.insert(def.getTableName(), data);
     }
 
@@ -125,6 +133,18 @@ public class ReportCommonServiceImpl implements ReportCommonService {
     public int delete(String code, Long id) {
         ReportDef def = reportDefMapper.selectByCode(code);
         return reportCommonMapper.deleteById(def.getTableName(), id);
+    }
+
+    /**
+     * 通用逻辑删除（自动获取表名）
+     */
+    public void logicDelete(String reportCode, Long dataId) {
+        // 1. 根据 reportCode 获取表名
+        ReportDef reportDef = reportDefMapper.selectByCode(reportCode);
+        String tableName = reportDef.getTableName();
+
+        // 2. 调用通用逻辑删除
+        reportCommonMapper.logicDelete(tableName, dataId);
     }
 
     @Override
@@ -205,8 +225,17 @@ public class ReportCommonServiceImpl implements ReportCommonService {
                     .append(" comment '").append(comment).append("',");
         }
 
-        sql.append("create_time datetime comment '创建时间',");
-        sql.append("update_time datetime comment '更新时间'");
+        // 遍历字段 ... 【你的原有代码完全不动】
+
+        // 👇 只改这里！给审计字段加 DEFAULT 默认值！
+        sql.append("org_code varchar(64) NULL COMMENT '机构编码',");
+        sql.append("org_name varchar(100) NULL COMMENT '机构名称',");
+        sql.append("create_by varchar(64) NULL COMMENT '创建人',");
+        sql.append("create_time datetime DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',");
+        sql.append("update_by varchar(64) NULL COMMENT '更新人',");
+        sql.append("update_time datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',");
+        sql.append("del_flag tinyint DEFAULT 0 COMMENT '删除标识'");
+
         sql.append(") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='")
                 .append(reportName).append("'");
 
@@ -470,49 +499,56 @@ public class ReportCommonServiceImpl implements ReportCommonService {
 
     @Override
     public List<ReportColumn> parseExcelHead(MultipartFile file) throws IOException {
-        // 1. 读取 Excel 所有行 → 修复：用 Map 接收，再转成 List
+
         List<List<String>> rows = new ArrayList<>();
 
+        // 读取 Excel 第一行（表头）
         EasyExcel.read(file.getInputStream(), new AnalysisEventListener<Map<Integer, String>>() {
             @Override
             public void invoke(Map<Integer, String> rowMap, AnalysisContext context) {
-                // 核心修复：把 Map 转成 List
                 List<String> row = new ArrayList<>();
                 for (int i = 0; i < rowMap.size(); i++) {
                     row.add(rowMap.getOrDefault(i, ""));
                 }
                 rows.add(row);
             }
-
             @Override
             public void doAfterAllAnalysed(AnalysisContext context) {}
         }).sheet().headRowNumber(0).doRead();
 
-        List<String> fieldNameRow = rows.get(0); // 第1行：字段名称
-// List typeRow = rows.get(1); // 第2行：类型
-// List isListRow = rows.get(2); // 第3行：是否列表
-// List isQueryRow = rows.get(3); // 第4行：是否查询
+        if (CollUtil.isEmpty(rows)) {
+            return new ArrayList<>();
+        }
 
+        // 第一行是中文表头
+        List<String> headList = rows.get(0);
         List<ReportColumn> columnList = new ArrayList<>();
-        int colCount = fieldNameRow.size();
 
-        for (int i = 0; i < colCount; i++) {
-            String label = getVal(fieldNameRow, i);
-// String type = getVal(typeRow, i);
-// String isListStr = getVal(isListRow, i);
-// String isQueryStr = getVal(isQueryRow, i);
+        for (int i = 0; i < headList.size(); i++) {
+            String label = headList.get(i) == null ? "" : headList.get(i).trim();
+            if (StrUtil.isBlank(label)) continue;
 
             ReportColumn col = new ReportColumn();
-            col.setColumnName("f_" + (i + 1));
-            col.setColumnLabel(label);
-            col.setColumnType("string");
-            col.setIsList(1);
-            col.setIsQuery(1);
+            col.setColumnName("f_" + (i + 1));        // f_1,f_2...
+            col.setColumnLabel(label);                 // 中文表头
+            col.setColumnType("varchar(255)");         // 默认字符串
+            col.setSort(i + 1);                        // 排序
+            col.setIsList(1);                          // 列表显示
+            col.setIsQuery(0);                         // 默认不查询
+            col.setIsSortable(1);                      // 可排序
+            col.setWidth(120);                         // 宽度
+            col.setAlign("left");                      // 左对齐
+            col.setIsImport(1);                        // 可导入
+            col.setIsExport(1);                        // 可导出
+            col.setIsRequired(0);                      // 不必填
+            col.setIsDesensitize(0);                   // 不脱敏
+            col.setDesensitizeType(null);
+            col.setIsSelect(0);                        // 不是下拉
+            col.setSelectOptions(null);
+            col.setDelFlag(0);                         // 未删除
 
             columnList.add(col);
         }
-
-// String path = createAndSaveTable(reportName, columnList);
         return columnList;
     }
 }

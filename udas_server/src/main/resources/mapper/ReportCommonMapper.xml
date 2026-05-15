@@ -60,5 +60,10 @@
     <update id="createTable">
         ${sql}
     </update>
-
+    <!-- 通用逻辑删除 -->
+    <update id="logicDelete">
+        UPDATE ${tableName}
+        SET del_flag = 1
+        WHERE id = #{id}
+    </update>
 </mapper>
