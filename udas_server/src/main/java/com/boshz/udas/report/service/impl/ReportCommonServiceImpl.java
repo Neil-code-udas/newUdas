@@ -28,7 +28,9 @@ public class ReportCommonServiceImpl implements ReportCommonService {
     private final ReportColumnMapper reportColumnMapper;
     private final ReportCommonMapper reportCommonMapper;
 
-    // ======================= 你原来的代码 完全保留 ==========================
+
+
+
     @Override
     public Map<String,Object> getConfig(String code){
         ReportDef def = reportDefMapper.selectByCode(code);
@@ -40,7 +42,7 @@ public class ReportCommonServiceImpl implements ReportCommonService {
     }
 
     @Override
-    public PageVo<List<Map<String,Object>>> page(String code, QueryEntity<?> q){
+    public PageVo<List<Map<String,Object>>> page(String code, QueryEntity q){
         ReportDef def = reportDefMapper.selectByCode(code);
         List<ReportColumn> cols = reportColumnMapper.selectByReportCode(code);
 
@@ -161,12 +163,12 @@ public class ReportCommonServiceImpl implements ReportCommonService {
     }
 
     @Override
-    public void createAndSaveTable(String reportName, List<ReportColumn> columnList) {
+    public String createAndSaveTable(String reportName, List<ReportColumn> columnList) {
 
         // 1. 生成唯一表名（超级简单）
         long now = System.currentTimeMillis();
         String timeStr = String.valueOf(now);
-        String bizCode = timeStr.substring(3);      // 报表编码
+        String bizCode = timeStr.substring(3); // 报表编码
         String realTableName = "tb_auto_" + bizCode;
 
         // 2. 建表SQL
@@ -222,6 +224,7 @@ public class ReportCommonServiceImpl implements ReportCommonService {
             col.setReportCode(bizCode);
             reportColumnMapper.insert(col);
         }
+        return "/report/" + def.getReportCode();
     }
 
     // ==================== 1. 下载模板 ====================
@@ -256,7 +259,7 @@ public class ReportCommonServiceImpl implements ReportCommonService {
     }
     // ==================== 2. 导出数据 ====================
     @Override
-    public void exportData(String code, QueryEntity<?> q, HttpServletResponse response) {
+    public void exportData(String code, QueryEntity q, HttpServletResponse response) {
         try {
             // 1. 获取报表配置
             ReportDef def = reportDefMapper.selectByCode(code);
@@ -273,20 +276,15 @@ public class ReportCommonServiceImpl implements ReportCommonService {
             Map<String, Object> params = new HashMap<>();
             StringBuilder whereSql = new StringBuilder(" 1=1 ");
 
-            if (q.getSearchCondition() != null && !q.getSearchCondition().isEmpty()) {
-                Map<String, Object> searchMap = q.getSearchCondition();
-                for (ReportColumn col : columns) {
-                    String fieldName = col.getColumnName();
-                    if (searchMap.containsKey(fieldName)) {
-                        Object val = searchMap.get(fieldName);
-                        if (val != null && !val.toString().trim().isEmpty()) {
-                            if ("string".equals(col.getColumnType())) {
-                                whereSql.append(" AND ").append(fieldName).append(" LIKE #{").append(fieldName).append("} ");
-                                params.put(fieldName, "%" + val + "%");
-                            } else {
-                                whereSql.append(" AND ").append(fieldName).append(" = #{").append(fieldName).append("} ");
-                                params.put(fieldName, val);
-                            }
+            Map<String,Object> search = q.getSearchCondition();
+
+            if(search != null){
+                for(ReportColumn c : columns){
+                    if(c.getIsQuery() == 1 && search.containsKey(c.getColumnName())){
+                        Object v = search.get(c.getColumnName());
+                        if(v != null && !v.toString().isEmpty()){
+                            whereSql.append(" AND ").append(c.getColumnName()).append(" LIKE CONCAT('%',#{params.").append(c.getColumnName()).append("},'%')");
+                            params.put(c.getColumnName(), v);
                         }
                     }
                 }
@@ -412,15 +410,16 @@ public class ReportCommonServiceImpl implements ReportCommonService {
         return successCount[0];
     }
 
+
     @Override
-    public void createTableByExcel(String reportName, MultipartFile file) throws IOException {
-        // 1. 读取 Excel 所有行 → 修复：用 Map 接收，再转成 List<String>
+    public String createTableByExcel(String reportName, MultipartFile file) throws IOException {
+        // 1. 读取 Excel 所有行 → 修复：用 Map 接收，再转成 List
         List<List<String>> rows = new ArrayList<>();
 
         EasyExcel.read(file.getInputStream(), new AnalysisEventListener<Map<Integer, String>>() {
             @Override
             public void invoke(Map<Integer, String> rowMap, AnalysisContext context) {
-                // 核心修复：把 Map 转成 List<String>
+                // 核心修复：把 Map 转成 List
                 List<String> row = new ArrayList<>();
                 for (int i = 0; i < rowMap.size(); i++) {
                     row.add(rowMap.getOrDefault(i, ""));
@@ -437,10 +436,10 @@ public class ReportCommonServiceImpl implements ReportCommonService {
             throw new RuntimeException("模板必须包含4行：字段名、类型、是否表格显示、是否可查询");
         }
 
-        List<String> fieldNameRow = rows.get(0);    // 第1行：字段名称
-        List<String> typeRow = rows.get(1);        // 第2行：类型
-        List<String> isListRow = rows.get(2);      // 第3行：是否列表
-        List<String> isQueryRow = rows.get(3);     // 第4行：是否查询
+        List<String> fieldNameRow = rows.get(0); // 第1行：字段名称
+        List<String> typeRow = rows.get(1); // 第2行：类型
+        List<String> isListRow = rows.get(2); // 第3行：是否列表
+        List<String> isQueryRow = rows.get(3); // 第4行：是否查询
 
         List<ReportColumn> columnList = new ArrayList<>();
         int colCount = fieldNameRow.size();
@@ -461,12 +460,59 @@ public class ReportCommonServiceImpl implements ReportCommonService {
             columnList.add(col);
         }
 
-        createAndSaveTable(reportName, columnList);
+        String path = createAndSaveTable(reportName, columnList);
+        return path;
     }
 
-    // 安全获取单元格值
-    private String getVal(List<String> list, int idx) {
-        return idx < list.size() ? (list.get(idx) == null ? "" : list.get(idx).trim()) : "";
+    private String getVal(List<String> list,int idx){
+        return idx<list.size()?(list.get(idx).trim()):"";
     }
 
+    @Override
+    public List<ReportColumn> parseExcelHead(MultipartFile file) throws IOException {
+        // 1. 读取 Excel 所有行 → 修复：用 Map 接收，再转成 List
+        List<List<String>> rows = new ArrayList<>();
+
+        EasyExcel.read(file.getInputStream(), new AnalysisEventListener<Map<Integer, String>>() {
+            @Override
+            public void invoke(Map<Integer, String> rowMap, AnalysisContext context) {
+                // 核心修复：把 Map 转成 List
+                List<String> row = new ArrayList<>();
+                for (int i = 0; i < rowMap.size(); i++) {
+                    row.add(rowMap.getOrDefault(i, ""));
+                }
+                rows.add(row);
+            }
+
+            @Override
+            public void doAfterAllAnalysed(AnalysisContext context) {}
+        }).sheet().headRowNumber(0).doRead();
+
+        List<String> fieldNameRow = rows.get(0); // 第1行：字段名称
+// List typeRow = rows.get(1); // 第2行：类型
+// List isListRow = rows.get(2); // 第3行：是否列表
+// List isQueryRow = rows.get(3); // 第4行：是否查询
+
+        List<ReportColumn> columnList = new ArrayList<>();
+        int colCount = fieldNameRow.size();
+
+        for (int i = 0; i < colCount; i++) {
+            String label = getVal(fieldNameRow, i);
+// String type = getVal(typeRow, i);
+// String isListStr = getVal(isListRow, i);
+// String isQueryStr = getVal(isQueryRow, i);
+
+            ReportColumn col = new ReportColumn();
+            col.setColumnName("f_" + (i + 1));
+            col.setColumnLabel(label);
+            col.setColumnType("string");
+            col.setIsList(1);
+            col.setIsQuery(1);
+
+            columnList.add(col);
+        }
+
+// String path = createAndSaveTable(reportName, columnList);
+        return columnList;
+    }
 }

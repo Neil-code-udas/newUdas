@@ -1,25 +1,25 @@
 package com.boshz.udas.report.controller;
 
+
 import com.boshz.udas.report.entity.ReportColumn;
 import com.boshz.udas.report.service.ReportCommonService;
-import com.boshz.udas.vo.ResultVO;
-import com.boshz.udas.vo.ResultVOUtil;
 import com.boshz.udas.vo.PageVo;
 import com.boshz.udas.vo.QueryEntity;
+import com.boshz.udas.vo.ResultVO;
+import com.boshz.udas.vo.ResultVOUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
-
 @RestController
 @RequestMapping("/report/common")
 @RequiredArgsConstructor
 public class ReportCommonController {
 
     private final ReportCommonService reportCommonService;
+
 
     // 获取配置
     @GetMapping("/config")
@@ -31,7 +31,7 @@ public class ReportCommonController {
     @PostMapping("/page")
     public ResultVO<PageVo<List<Map<String, Object>>>> page(
             @RequestParam String code,
-            @RequestBody QueryEntity<?> q
+            @RequestBody QueryEntity q
     ) {
         return ResultVOUtil.success(reportCommonService.page(code, q));
     }
@@ -73,16 +73,6 @@ public class ReportCommonController {
     }
 
 
-    // 一键自动建表（你最新功能）
-    @PostMapping("/createTable")
-    public ResultVO createTable(
-            @RequestParam String reportName,
-            @RequestBody List<ReportColumn> columns
-    ) {
-        reportCommonService.createAndSaveTable(reportName, columns);
-        return ResultVOUtil.success();
-    }
-
     // 1. 下载 Excel 模板
     @GetMapping("/downloadTemplate")
     public void downloadTemplate(@RequestParam String code, HttpServletResponse response) {
@@ -93,7 +83,7 @@ public class ReportCommonController {
     @PostMapping("/export")
     public void export(
             @RequestParam String code,
-            @RequestBody QueryEntity<?> q,
+            @RequestBody QueryEntity q,
             HttpServletResponse response
     ) {
         reportCommonService.exportData(code, q, response);
@@ -107,13 +97,41 @@ public class ReportCommonController {
     ) throws Exception {
         return ResultVOUtil.success(reportCommonService.importData(code, file));
     }
-    //========================================================================================
-    @PostMapping("/createTableByExcel")
-    public ResultVO createTableByExcel(
-            @RequestParam String reportName,
-            @RequestParam MultipartFile file) throws Exception {
 
-        reportCommonService.createTableByExcel(reportName, file);
-        return ResultVOUtil.success();
+    /*
+    通过excel建表，暂时舍弃，excel改为仅表头
+     */
+//    @PostMapping("/createTableByExcel")
+//    public ResultVO createTableByExcel(
+//            @RequestParam("appId") Long appId,
+//            @RequestParam("parentId") Long parentId,
+//            @RequestParam("name") String name,
+//            @RequestParam("hideInMenu") Integer hideInMenu,
+//            @RequestParam("copy") Boolean copy,
+//            @RequestParam("sort") String sort,
+//            @RequestParam("file") MultipartFile file) throws Exception {
+//
+//        String createPath =reportCommonService.createTableByExcel(name, file);
+//        MenuForm menuForm = new MenuForm();
+//        menuForm.setAppId(appId);
+//        menuForm.setCopy(true);
+//        menuForm.setParentId(parentId);
+//        menuForm.setSort("Z");
+//        menuForm.setName(name);
+//        menuForm.setPath(createPath);
+//        menuForm.setHideInMenu(0);
+//        menuForm.setDescription(name);
+//        menuFeignService.create(menuForm);
+//        return ResultVOUtil.success();
+//    }
+
+    @PostMapping("/parseExcelHead")
+    public ResultVO parseExcelparseExcelHead(@RequestParam("file") MultipartFile file) throws Exception {
+
+        List<ReportColumn> reportColumns = reportCommonService.parseExcelHead(file);
+        return ResultVOUtil.success(reportColumns);
     }
+
+
 }
+

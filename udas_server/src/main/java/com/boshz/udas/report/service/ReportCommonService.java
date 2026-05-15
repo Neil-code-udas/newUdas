@@ -17,7 +17,7 @@ public interface ReportCommonService {
     // 原有
     Map<String, Object> getConfig(String code);
 
-    PageVo<List<Map<String, Object>>> page(String code, QueryEntity<?> q);
+    PageVo<List<Map<String, Object>>> page(String code, QueryEntity q);
 
     // 新增CRUD
     Map<String, Object> get(String code, Long id);
@@ -29,12 +29,12 @@ public interface ReportCommonService {
     int delete(String code, Long id);
 
 
-    void createAndSaveTable(String reportName, List<ReportColumn> columns);
+    String createAndSaveTable(String reportName, List<ReportColumn> columns);
 
     void downloadTemplate(String code, HttpServletResponse response);
     // 导出（带条件）
-    void exportData(String code, QueryEntity<?> q, HttpServletResponse response);
+    void exportData(String code, QueryEntity q, HttpServletResponse response);
     int importData(String code, MultipartFile file) throws Exception;
 
-    void createTableByExcel(String reportName, MultipartFile file) throws IOException;
-}
+    String createTableByExcel(String reportName, MultipartFile file) throws IOException;
+    List<ReportColumn> parseExcelHead(MultipartFile file) throws IOException;}

@@ -15,4 +15,5 @@ mybatis:
     call-setters-on-nulls: true
 logging:
   level:
-    com.boshz.udas.report.mapper: debug
+    com.boshz.udas.report.mapper: DEBUG
+

@@ -9,14 +9,14 @@ import java.util.Map;
 public interface ReportCommonMapper {
 
     // 分页查询
-    List<Map<String, Object>> selectPageList(
-            @Param("tableName") String tableName,
-            @Param("columns") String columns,
-            @Param("whereSql") String whereSql,
-            @Param("params") Map<String, Object> params,
-            @Param("offset") long offset,
-            @Param("size") int size
-    );
+//    List<Map<String, Object>> selectPageList(
+//            @Param("tableName") String tableName,
+//            @Param("columns") String columns,
+//            @Param("whereSql") String whereSql,
+//            @Param("params") Map<String, Object> params,
+//            @Param("offset") long offset,
+//            @Param("size") int size
+//    );
 
     // 统计总数
     long selectCount(
@@ -26,10 +26,10 @@ public interface ReportCommonMapper {
     );
 
     // 根据ID查询单条
-    Map<String, Object> getById(
-            @Param("tableName") String tableName,
-            @Param("id") Long id
-    );
+//    Map<String, Object> getById(
+//            @Param("tableName") String tableName,
+//            @Param("id") Long id
+//    );
 
     // 通用新增
     int insert(
@@ -51,4 +51,8 @@ public interface ReportCommonMapper {
 
     // ===================== 自动建表（你最新功能） =====================
     void createTable(@Param("sql") String sql);
+
+    List<Map<String, Object>> selectPageList(String tableName, String fields, String string, Map<String, Object> params, long offset, int size);
+
+    Map<String, Object> getById(String tableName, Long id);
 }
