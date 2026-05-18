@@ -31,9 +31,10 @@ public class ReportCommonController {
     @PostMapping("/page")
     public ResultVO<PageVo<List<Map<String, Object>>>> page(
             @RequestParam String code,
-            @RequestBody QueryEntity q
+            @RequestBody QueryEntity q,
+            @RequestParam String account
     ) {
-        return ResultVOUtil.success(reportCommonService.page(code, q));
+        return ResultVOUtil.success(reportCommonService.page(code, q,account));
     }
 
     // 单条详情

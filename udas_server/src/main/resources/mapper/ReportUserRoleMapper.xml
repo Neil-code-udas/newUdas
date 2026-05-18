@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boshz.udas.report.mapper.ReportUserRoleMapper">
+
+    <select id="selectByReportAndUser" resultType="com.boshz.udas.report.entity.ReportUserRole">
+        SELECT id, report_code, user_account, role_type,
+               create_by, create_time, update_by, update_time
+        FROM tb_report_user_role
+        WHERE report_code = #{reportCode}
+          AND user_account = #{userAccount}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO tb_report_user_role
+            (report_code, user_account, role_type, create_by, update_by)
+        VALUES
+            (#{reportCode}, #{userAccount}, #{roleType}, #{createBy}, #{updateBy})
+    </insert>
+
+    <update id="updateRoleType">
+        UPDATE tb_report_user_role
+        SET role_type = #{roleType},
+            update_by = #{updateBy},
+            update_time = NOW()
+        WHERE report_code = #{reportCode}
+          AND user_account = #{userAccount}
+    </update>
+
+    <delete id="deleteRole">
+        DELETE FROM tb_report_user_role
+        WHERE report_code = #{reportCode}
+          AND user_account = #{userAccount}
+    </delete>
+
+    <select id="selectListByReportCode" resultType="com.boshz.udas.report.entity.ReportUserRole">
+        SELECT report_code, user_account, role_type, create_time
+        FROM tb_report_user_role
+        WHERE report_code = #{reportCode}
+    </select>
+
+</mapper>

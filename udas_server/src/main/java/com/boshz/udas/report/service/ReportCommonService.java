@@ -18,7 +18,7 @@ public interface ReportCommonService {
     // 原有
     Map<String, Object> getConfig(String code);
 
-    PageVo<List<Map<String, Object>>> page(String code, QueryEntity q);
+    PageVo<List<Map<String, Object>>> page(String code, QueryEntity q,String account);
 
     // 新增CRUD
     Map<String, Object> get(String code, Long id);

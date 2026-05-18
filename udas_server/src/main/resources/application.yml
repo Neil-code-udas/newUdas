@@ -16,4 +16,3 @@ mybatis:
 logging:
   level:
     com.boshz.udas.report.mapper: DEBUG
-

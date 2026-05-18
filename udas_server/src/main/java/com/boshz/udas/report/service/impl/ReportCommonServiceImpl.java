@@ -7,9 +7,11 @@ import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.boshz.udas.report.entity.ReportColumn;
 import com.boshz.udas.report.entity.ReportDef;
+import com.boshz.udas.report.entity.ReportUserRole;
 import com.boshz.udas.report.mapper.ReportColumnMapper;
 import com.boshz.udas.report.mapper.ReportCommonMapper;
 import com.boshz.udas.report.mapper.ReportDefMapper;
+import com.boshz.udas.report.mapper.ReportUserRoleMapper;
 import com.boshz.udas.report.service.ReportCommonService;
 import com.boshz.udas.vo.PageVo;
 import com.boshz.udas.vo.QueryEntity;
@@ -27,6 +29,7 @@ import java.util.*;
 public class ReportCommonServiceImpl implements ReportCommonService {
 
     private final ReportDefMapper reportDefMapper;
+    private final ReportUserRoleMapper reportUserRoleMapper;
     private final ReportColumnMapper reportColumnMapper;
     private final ReportCommonMapper reportCommonMapper;
 
@@ -44,7 +47,7 @@ public class ReportCommonServiceImpl implements ReportCommonService {
     }
 
     @Override
-    public PageVo<List<Map<String,Object>>> page(String code, QueryEntity q){
+    public PageVo<List<Map<String,Object>>> page(String code, QueryEntity q,String account){
         ReportDef def = reportDefMapper.selectByCode(code);
         List<ReportColumn> cols = reportColumnMapper.selectByReportCode(code);
 
@@ -70,7 +73,19 @@ public class ReportCommonServiceImpl implements ReportCommonService {
                 }
             }
         }
+        // ===================== 【权限过滤：只加这一段】 =====================
+        // 1. 查询当前用户在该报表的角色
+        ReportUserRole role = reportUserRoleMapper.selectByReportAndUser(code, account);
+        String roleType = role == null ? null : role.getRoleType();
 
+        // 2. 根据角色拼接数据权限
+        if ("writer".equals(roleType)) {
+            // 填写人：只能看自己的数据
+            where.append(" AND create_user = #{account} ");
+            params.put("account", account);
+        }
+        // admin/creator/viewer：不过滤，查全部
+        // ====================================================================
         int current = q.getCurrent() == null ? 1 : q.getCurrent();
         int size = q.getPageSize();
         long offset = (long)(current-1)*size;
