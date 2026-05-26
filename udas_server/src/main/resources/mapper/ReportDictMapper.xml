@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boshz.udas.report.mapper.ReportDictMapper">
+
+    <!-- 根据报表+字典编码查询选项 -->
+    <select id="listByDictCode" resultType="com.boshz.udas.report.entity.ReportDict">
+        SELECT id, report_code, dict_name, dict_code,
+               item_value, item_label, sort
+        FROM tb_report_dict
+        WHERE report_code = #{reportCode}
+          AND dict_code = #{dictCode}
+        ORDER BY sort ASC
+    </select>
+
+    <!-- 查询当前报表所有字典 -->
+    <select id="listByReportCode" resultType="com.boshz.udas.report.entity.ReportDict">
+        SELECT dict_code, item_value, item_label
+        FROM tb_report_dict
+        WHERE report_code = #{reportCode}
+    </select>
+
+    <!-- 新增 -->
+    <insert id="insertDict">
+        INSERT INTO tb_report_dict
+            (report_code, dict_name, dict_code, item_value, item_label, sort)
+        VALUES
+            (#{reportCode}, #{dictName}, #{dictCode}, #{itemValue}, #{itemLabel}, #{sort})
+    </insert>
+
+    <!-- 物理删除 -->
+    <delete id="deleteDict">
+        DELETE FROM tb_report_dict
+        WHERE report_code = #{reportCode}
+          AND dict_code = #{dictCode}
+          AND item_value = #{itemValue}
+    </delete>
+
+</mapper>
