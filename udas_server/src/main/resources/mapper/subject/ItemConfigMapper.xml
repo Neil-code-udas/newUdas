@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.subject.mapper.ItemConfigMapper">
+
+    <insert id="insert">
+        INSERT INTO tb_item_config(item_name,subject_code,remark,create_by)
+        VALUES(#{itemName},#{subjectCode},#{remark},#{createBy})
+    </insert>
+
+    <update id="update">
+        UPDATE tb_item_config
+        <set>
+            <if test="itemName != null and itemName!=''">item_name=#{itemName},</if>
+            <if test="subjectCode != null and subjectCode!=''">subject_code=#{subjectCode},</if>
+            <if test="remark != null">remark=#{remark}</if>
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM tb_item_config WHERE id=#{id}
+    </delete>
+
+    <select id="selectById" resultType="com.boshz.udas.subject.entity.ItemConfig">
+        SELECT id,item_name itemName,subject_code subjectCode,remark,create_by createBy,create_time createTime,update_time updateTime
+        FROM tb_item_config WHERE id=#{id}
+    </select>
+
+    <!--下拉：不传keyword查全部，传值项目名/科目编码模糊-->
+    <select id="selectAll" resultType="com.boshz.udas.subject.entity.ItemConfig">
+        SELECT id,item_name itemName,subject_code subjectCode,remark
+        FROM tb_item_config
+        <where>
+            <if test="keyword != null and keyword != ''">
+                item_name LIKE CONCAT('%',#{keyword},'%') OR subject_code LIKE CONCAT('%',#{keyword},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--选中科目后，只查当前科目绑定项目-->
+    <select id="selectBySubjectCode" resultType="com.boshz.udas.subject.entity.ItemConfig">
+        SELECT id,item_name itemName,subject_code subjectCode,remark
+        FROM tb_item_config WHERE subject_code=#{subjectCode}
+    </select>
+
+    <!--配置页面列表查询-->
+    <select id="selectPage" resultType="com.boshz.udas.subject.entity.ItemConfig">
+        SELECT id,item_name itemName,subject_code subjectCode,remark,create_by createBy,create_time createTime,update_time updateTime
+        FROM tb_item_config
+        <where>
+            <!--科目下钻必传条件：科目编码精准匹配-->
+            <if test="query.subjectCode != null and query.subjectCode != ''">
+                subject_code = #{query.subjectCode}
+            </if>
+            <!--项目名称模糊查询-->
+            <if test="query.itemName != null and query.itemName != ''">
+                item_name LIKE CONCAT('%',#{query.itemName},'%')
+            </if>
+        </where>
+        ORDER BY id DESC
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_item_config
+        <where>
+            <if test="query.subjectCode != null and query.subjectCode != ''">
+                subject_code = #{query.subjectCode}
+            </if>
+            <if test="query.itemName != null and query.itemName != ''">
+                item_name LIKE CONCAT('%',#{query.itemName},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

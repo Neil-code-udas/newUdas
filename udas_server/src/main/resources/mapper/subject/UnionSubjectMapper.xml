@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.subject.mapper.UnionSubjectMapper">
+
+    <!--【原有不动】预决算递归查询-->
+    <select id="selectDirectChildCode" resultType="java.lang.String">
+        SELECT code FROM tb_union_subject WHERE parent_code = #{parentCode} AND is_deleted = 0
+    </select>
+    <select id="selectCodeByCode" resultType="java.lang.String">
+        SELECT code FROM tb_union_subject WHERE code = #{code} AND is_deleted = 0
+    </select>
+
+    <!--【原有不动】凭证下拉模糊-->
+    <select id="selectSubjectLike" resultType="com.boshz.udas.subject.entity.UnionSubject">
+        SELECT id,code,name,parent_code parentCode,level,create_time createTime,update_time updateTime
+        FROM tb_union_subject
+        <where>
+            <if test="keyword != null and keyword != ''">
+                code LIKE CONCAT(#{keyword},'%') OR name LIKE CONCAT('%',#{keyword},'%')
+            </if>
+        </where>
+        ORDER BY LPAD(code,12,'0')
+    </select>
+
+    <!--=====新增CRUD=====-->
+    <insert id="insert">
+        INSERT INTO tb_union_subject(code,name,parent_code,level)
+        VALUES(#{code},#{name},#{parentCode},#{level})
+    </insert>
+
+    <update id="update">
+        UPDATE tb_union_subject
+        <set>
+            <if test="code != null and code!=''">code=#{code},</if>
+            <if test="name != null and name!=''">name=#{name},</if>
+            <if test="parentCode != null">parent_code=#{parentCode},</if>
+            <if test="level != null">level=#{level}</if>
+        </set>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM tb_union_subject WHERE id=#{id}
+    </delete>
+
+    <select id="selectById" resultType="com.boshz.udas.subject.entity.UnionSubject">
+        SELECT id,code,name,parent_code parentCode,level,create_time createTime,update_time updateTime
+        FROM tb_union_subject WHERE id=#{id}
+    </select>
+
+
+
+    <select id="selectPage" resultType="com.boshz.udas.subject.entity.UnionSubject">
+        SELECT id,code,name,parent_code parentCode,level,create_time createTime
+        FROM tb_union_subject
+        <where>
+            <if test="query.code != null and query.code != ''">and code LIKE CONCAT('%',#{query.code},'%')</if>
+            <if test="query.name != null and query.name != ''">and name LIKE CONCAT('%',#{query.name},'%')</if>
+        </where>
+        ORDER BY LPAD(code,12,'0')
+        LIMIT #{offset},#{pageSize}
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Long">
+        SELECT COUNT(1) FROM tb_union_subject
+        <where>
+            <if test="query.code != null and query.code != ''">and code LIKE CONCAT('%',#{query.code},'%')</if>
+            <if test="query.name != null and query.name != ''">and name LIKE CONCAT('%',#{query.name},'%')</if>
+        </where>
+    </select>
+</mapper>

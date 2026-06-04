@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.subject.mapper.VoucherMapper">
+
+    <insert id="insert">
+        INSERT INTO tb_pay_voucher(
+            voucher_no,apply_dept,occur_time,item_id,item_name,
+            subject_code,subject_name,pay_target,pay_account,
+            pay_amount,is_club_expense,condoled_person,
+            normal_desc,club_desc,membership_type,remark,create_by
+        )
+        VALUES(
+                  #{voucherNo},#{applyDept},#{occurTime},#{itemId},#{itemName},
+                  #{subjectCode},#{subjectName},#{payTarget},#{payAccount},
+                  #{payAmount},#{isClubExpense},#{condoledPerson},
+                  #{normalDesc},#{clubDesc},#{membershipType},#{remark},#{createBy}
+              )
+    </insert>
+
+    <update id="update">
+        UPDATE tb_pay_voucher
+        <set>
+            <if test="applyDept != null and applyDept != ''">apply_dept = #{applyDept},</if>
+            <if test="occurTime != null">occur_time = #{occurTime},</if>
+            <if test="itemId != null">item_id = #{itemId},</if>
+            <if test="itemName != null and itemName != ''">item_name = #{itemName},</if>
+            <if test="subjectCode != null and subjectCode != ''">subject_code = #{subjectCode},</if>
+            <if test="subjectName != null and subjectName != ''">subject_name = #{subjectName},</if>
+            <if test="payTarget != null and payTarget != ''">pay_target = #{payTarget},</if>
+            <if test="payAccount != null">pay_account = #{payAccount},</if>
+            <if test="payAmount != null">pay_amount = #{payAmount},</if>
+            <if test="isClubExpense != null">is_club_expense = #{isClubExpense},</if>
+            <if test="condoledPerson != null">condoled_person = #{condoledPerson},</if>
+            <if test="normalDesc != null">normal_desc = #{normalDesc},</if>
+            <if test="clubDesc != null">club_desc = #{clubDesc},</if>
+            <if test="membershipType != null">membership_type = #{membershipType},</if>
+            <if test="remark != null">remark = #{remark}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM tb_pay_voucher WHERE id = #{id}
+    </delete>
+
+    <select id="selectById" resultType="com.boshz.udas.subject.entity.Voucher">
+        SELECT * FROM tb_pay_voucher WHERE id = #{id}
+    </select>
+
+    <select id="selectPage" resultType="com.boshz.udas.subject.entity.Voucher">
+        SELECT * FROM tb_pay_voucher
+        <where>
+            <if test="voucherNo != null and voucherNo != ''">voucher_no LIKE CONCAT('%',#{voucherNo},'%')</if>
+            <if test="applyDept != null and applyDept != ''">apply_dept LIKE CONCAT('%',#{applyDept},'%')</if>
+            <if test="subjectCode != null and subjectCode != ''">subject_code = #{subjectCode}</if>
+            <if test="startDate != null">occur_time >= #{startDate}</if>
+            <if test="endDate != null">occur_time &lt;= #{endDate}</if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+</mapper>

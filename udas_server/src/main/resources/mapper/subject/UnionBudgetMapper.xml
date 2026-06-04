@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.subject.mapper.UnionBudgetMapper">
+
+    <select id="selectSubjectBudgetList" resultType="com.boshz.udas.subject.dto.SubjectBudgetDTO">
+        SELECT
+        s.code,
+        s.name,
+        s.parent_code AS parentCode,
+        s.level,
+        b.year,
+        b.budget,
+        b.actual
+        FROM tb_union_subject s
+        LEFT JOIN tb_union_budget b
+        ON s.code = b.subject_code AND b.is_deleted = 0
+        WHERE s.is_deleted = 0
+
+        <!-- 科目编号过滤（父+所有子） -->
+        <if test="codeList != null and codeList.size() > 0">
+            AND s.code IN
+            <foreach collection="codeList" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <!-- 科目名称模糊查询 -->
+        <if test="subjectName != null and subjectName != ''">
+            AND s.name LIKE CONCAT('%', #{subjectName}, '%')
+        </if>
+
+        <!-- 年度过滤 -->
+        <if test="yearList != null and yearList.size() > 0">
+            AND b.year IN
+            <foreach collection="yearList" item="year" open="(" separator="," close=")">
+                #{year}
+            </foreach>
+        </if>
+
+        ORDER BY s.code, b.year
+    </select>
+
+</mapper>
