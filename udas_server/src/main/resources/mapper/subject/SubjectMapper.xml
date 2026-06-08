@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.student.mapper.SubjectMapper">
+
+    <resultMap type="com.boshz.udas.student.entity.Subject" id="SubjectMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="subjectCode" column="subject_code" jdbcType="VARCHAR"/>
+        <result property="subjectName" column="subject_name" jdbcType="VARCHAR"/>
+        <result property="subjectType" column="subject_type" jdbcType="INTEGER"/>
+        <result property="sort" column="sort" jdbcType="INTEGER"/>
+        <result property="deleted" column="deleted" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="SubjectMap">
+        select id,
+               subject_code,
+               subject_name,
+               subject_type,
+               sort,
+               deleted,
+               create_time,
+               update_time
+        from tb_subject
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据（适配 offset/pageSize）-->
+    <select id="queryAllByLimit" resultMap="SubjectMap">
+        select
+        id, subject_code, subject_name, subject_type, sort, deleted, create_time, update_time
+        from tb_subject
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.subjectCode != null and query.subjectCode != ''">
+                and subject_code = #{query.subjectCode}
+            </if>
+            <if test="query.subjectName != null and query.subjectName != ''">
+                and subject_name = #{query.subjectName}
+            </if>
+            <if test="query.subjectType != null">
+                and subject_type = #{query.subjectType}
+            </if>
+            <if test="query.sort != null">
+                and sort = #{query.sort}
+            </if>
+            <if test="query.deleted != null">
+                and deleted = #{query.deleted}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+        </where>
+        <if test="offset != null">
+            limit #{offset}, #{pageSize}
+        </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="selectCount" resultType="java.lang.Long">
+        select count(1)
+        from tb_subject
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.subjectCode != null and query.subjectCode != ''">
+                and subject_code = #{query.subjectCode}
+            </if>
+            <if test="query.subjectName != null and query.subjectName != ''">
+                and subject_name = #{query.subjectName}
+            </if>
+            <if test="query.subjectType != null">
+                and subject_type = #{query.subjectType}
+            </if>
+            <if test="query.sort != null">
+                and sort = #{query.sort}
+            </if>
+            <if test="query.deleted != null">
+                and deleted = #{query.deleted}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_subject(subject_code, subject_name, subject_type, sort, deleted, create_time, update_time)
+        values (#{subjectCode}, #{subjectName}, #{subjectType}, #{sort}, #{deleted}, #{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_subject(subject_code, subject_name, subject_type, sort, deleted, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.subjectCode}, #{entity.subjectName}, #{entity.subjectType}, #{entity.sort}, #{entity.deleted},
+            #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_subject(subject_code, subject_name, subject_type, sort, deleted, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.subjectCode}, #{entity.subjectName}, #{entity.subjectType}, #{entity.sort}, #{entity.deleted},
+            #{entity.createTime}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        subject_code = values(subject_code),
+        subject_name = values(subject_name),
+        subject_type = values(subject_type),
+        sort = values(sort),
+        deleted = values(deleted),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_subject
+        <set>
+            <if test="subjectCode != null and subjectCode != ''">
+                subject_code = #{subjectCode},
+            </if>
+            <if test="subjectName != null and subjectName != ''">
+                subject_name = #{subjectName},
+            </if>
+            <if test="subjectType != null">
+                subject_type = #{subjectType},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+            <if test="deleted != null">
+                deleted = #{deleted},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from tb_subject
+        where id = #{id}
+    </delete>
+
+</mapper>

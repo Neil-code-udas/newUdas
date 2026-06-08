@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.student.mapper.StudentMapper">
+
+    <resultMap type="com.boshz.udas.student.entity.Student" id="StudentMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="studentNo" column="student_no" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="gender" column="gender" jdbcType="VARCHAR"/>
+        <result property="age" column="age" jdbcType="INTEGER"/>
+        <result property="className" column="class_name" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="email" column="email" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="createUser" column="create_user" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateUser" column="update_user" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="StudentMap">
+        select
+id, student_no, name, gender, age, class_name, phone, email, address, create_user, create_time, update_user, update_time
+        from tb_student
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据（适配 offset/pageSize）-->
+    <select id="queryAllByLimit" resultMap="StudentMap">
+        select
+id, student_no, name, gender, age, class_name, phone, email, address, create_user, create_time, update_user, update_time
+        from tb_student
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.studentNo != null and query.studentNo != ''">
+                and student_no = #{query.studentNo}
+            </if>
+            <if test="query.name != null and query.name != ''">
+                and name = #{query.name}
+            </if>
+            <if test="query.gender != null and query.gender != ''">
+                and gender = #{query.gender}
+            </if>
+            <if test="query.age != null">
+                and age = #{query.age}
+            </if>
+            <if test="query.className != null and query.className != ''">
+                and class_name = #{query.className}
+            </if>
+            <if test="query.phone != null and query.phone != ''">
+                and phone = #{query.phone}
+            </if>
+            <if test="query.email != null and query.email != ''">
+                and email = #{query.email}
+            </if>
+            <if test="query.address != null and query.address != ''">
+                and address = #{query.address}
+            </if>
+            <if test="query.createUser != null and query.createUser != ''">
+                and create_user = #{query.createUser}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateUser != null and query.updateUser != ''">
+                and update_user = #{query.updateUser}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+        </where>
+    <if test="offset != null">
+        limit #{offset}, #{pageSize}
+    </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="selectCount" resultType="java.lang.Long">
+        select count(1)
+        from tb_student
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.studentNo != null and query.studentNo != ''">
+                and student_no = #{query.studentNo}
+            </if>
+            <if test="query.name != null and query.name != ''">
+                and name = #{query.name}
+            </if>
+            <if test="query.gender != null and query.gender != ''">
+                and gender = #{query.gender}
+            </if>
+            <if test="query.age != null">
+                and age = #{query.age}
+            </if>
+            <if test="query.className != null and query.className != ''">
+                and class_name = #{query.className}
+            </if>
+            <if test="query.phone != null and query.phone != ''">
+                and phone = #{query.phone}
+            </if>
+            <if test="query.email != null and query.email != ''">
+                and email = #{query.email}
+            </if>
+            <if test="query.address != null and query.address != ''">
+                and address = #{query.address}
+            </if>
+            <if test="query.createUser != null and query.createUser != ''">
+                and create_user = #{query.createUser}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateUser != null and query.updateUser != ''">
+                and update_user = #{query.updateUser}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_student(student_no, name, gender, age, class_name, phone, email, address, create_user, create_time, update_user, update_time)
+        values (#{studentNo}, #{name}, #{gender}, #{age}, #{className}, #{phone}, #{email}, #{address}, #{createUser}, #{createTime}, #{updateUser}, #{updateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_student(student_no, name, gender, age, class_name, phone, email, address, create_user, create_time, update_user, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.studentNo}, #{entity.name}, #{entity.gender}, #{entity.age}, #{entity.className}, #{entity.phone}, #{entity.email}, #{entity.address}, #{entity.createUser}, #{entity.createTime}, #{entity.updateUser}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_student(student_no, name, gender, age, class_name, phone, email, address, create_user, create_time, update_user, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.studentNo}, #{entity.name}, #{entity.gender}, #{entity.age}, #{entity.className}, #{entity.phone}, #{entity.email}, #{entity.address}, #{entity.createUser}, #{entity.createTime}, #{entity.updateUser}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+student_no = values(student_no),
+name = values(name),
+gender = values(gender),
+age = values(age),
+class_name = values(class_name),
+phone = values(phone),
+email = values(email),
+address = values(address),
+create_user = values(create_user),
+create_time = values(create_time),
+update_user = values(update_user),
+update_time = values(update_time)    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_student
+        <set>
+            <if test="studentNo != null and studentNo != ''">
+                student_no = #{studentNo},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="gender != null and gender != ''">
+                gender = #{gender},
+            </if>
+            <if test="age != null">
+                age = #{age},
+            </if>
+            <if test="className != null and className != ''">
+                class_name = #{className},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="createUser != null and createUser != ''">
+                create_user = #{createUser},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateUser != null and updateUser != ''">
+                update_user = #{updateUser},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tb_student where id = #{id}
+    </delete>
+
+</mapper>

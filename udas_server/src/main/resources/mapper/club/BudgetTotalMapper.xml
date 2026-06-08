@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.club.mapper.BudgetTotalMapper">
+    <select id="selectPage" resultType="com.boshz.udas.club.entity.BudgetTotal">
+        SELECT id,subject_code subjectCode,budget_amount budgetAmount,actual_amount actualAmount,budget_year budgetYear,in_out_type inOutType,update_time updateTime
+        FROM tb_budget_total
+        <where>
+            <if test="query.subjectCode != null and query.subjectCode != ''">subject_code=#{query.subjectCode}</if>
+            <if test="query.budgetYear != null">budget_year=#{query.budgetYear}</if>
+            <if test="query.inOutType != null">in_out_type=#{query.inOutType}</if>
+        </where>
+        ORDER BY budget_year DESC,subject_code
+        LIMIT #{offset},#{pageSize}
+    </select>
+    <select id="selectCount" resultType="Long">
+        SELECT COUNT(1) FROM tb_budget_total
+        <where>
+            <if test="query.subjectCode != null and query.subjectCode != ''">subject_code=#{query.subjectCode}</if>
+            <if test="query.budgetYear != null">budget_year=#{query.budgetYear}</if>
+            <if test="query.inOutType != null">in_out_type=#{query.inOutType}</if>
+        </where>
+    </select>
+    <delete id="deleteByCond">
+        DELETE FROM tb_budget_total WHERE subject_code=#{code} AND budget_year=#{year} AND in_out_type=#{type}
+    </delete>
+    <select id="sumIncome" resultType="java.util.Map">
+        SELECT IFNULL(SUM(budget_amount),0) totalBudget,IFNULL(SUM(actual_amount),0) totalActual
+        FROM tb_income_budget_detail WHERE subject_code=#{code} AND budget_year=#{year}
+    </select>
+    <select id="sumOut" resultType="java.util.Map">
+        SELECT IFNULL(SUM(budget_amount),0) totalBudget,IFNULL(SUM(actual_amount),0) totalActual
+        FROM tb_out_budget_detail WHERE subject_code=#{code} AND budget_year=#{year}
+    </select>
+    <insert id="insertTotal">
+        INSERT INTO tb_budget_total(subject_code,budget_amount,actual_amount,budget_year,in_out_type)
+        VALUES(#{subjectCode},#{budgetAmount},#{actualAmount},#{budgetYear},#{inOutType})
+    </insert>
+</mapper>
