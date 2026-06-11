@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace=".mapper.TbReportUserRoleMapper">
+
+    <resultMap type=".entity.TbReportUserRole" id="TbReportUserRoleMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="reportCode" column="report_code" jdbcType="VARCHAR"/>
+        <result property="userAccount" column="user_account" jdbcType="VARCHAR"/>
+        <result property="roleType" column="role_type" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="TbReportUserRoleMap">
+        select
+id, report_code, user_account, role_type, create_by, create_time, update_by, update_time
+        from tb_report_user_role
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据（适配 offset/pageSize）-->
+    <select id="queryAllByLimit" resultMap="TbReportUserRoleMap">
+        select
+id, report_code, user_account, role_type, create_by, create_time, update_by, update_time
+        from tb_report_user_role
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.reportCode != null and query.reportCode != ''">
+                and report_code = #{query.reportCode}
+            </if>
+            <if test="query.userAccount != null and query.userAccount != ''">
+                and user_account = #{query.userAccount}
+            </if>
+            <if test="query.roleType != null and query.roleType != ''">
+                and role_type = #{query.roleType}
+            </if>
+            <if test="query.createBy != null and query.createBy != ''">
+                and create_by = #{query.createBy}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateBy != null and query.updateBy != ''">
+                and update_by = #{query.updateBy}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+        </where>
+    <if test="offset != null">
+        limit #{offset}, #{pageSize}
+    </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="selectCount" resultType="java.lang.Long">
+        select count(1)
+        from tb_report_user_role
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.reportCode != null and query.reportCode != ''">
+                and report_code = #{query.reportCode}
+            </if>
+            <if test="query.userAccount != null and query.userAccount != ''">
+                and user_account = #{query.userAccount}
+            </if>
+            <if test="query.roleType != null and query.roleType != ''">
+                and role_type = #{query.roleType}
+            </if>
+            <if test="query.createBy != null and query.createBy != ''">
+                and create_by = #{query.createBy}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateBy != null and query.updateBy != ''">
+                and update_by = #{query.updateBy}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_report_user_role(report_code, user_account, role_type, create_by, create_time, update_by, update_time)
+        values (#{reportCode}, #{userAccount}, #{roleType}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_report_user_role(report_code, user_account, role_type, create_by, create_time, update_by, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.reportCode}, #{entity.userAccount}, #{entity.roleType}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_report_user_role(report_code, user_account, role_type, create_by, create_time, update_by, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.reportCode}, #{entity.userAccount}, #{entity.roleType}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+report_code = values(report_code),
+user_account = values(user_account),
+role_type = values(role_type),
+create_by = values(create_by),
+create_time = values(create_time),
+update_by = values(update_by),
+update_time = values(update_time)    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_report_user_role
+        <set>
+            <if test="reportCode != null and reportCode != ''">
+                report_code = #{reportCode},
+            </if>
+            <if test="userAccount != null and userAccount != ''">
+                user_account = #{userAccount},
+            </if>
+            <if test="roleType != null and roleType != ''">
+                role_type = #{roleType},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tb_report_user_role where id = #{id}
+    </delete>
+
+</mapper>

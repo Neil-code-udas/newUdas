@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.demo.mapper.ReportDefMapper">
+
+    <resultMap type="com.boshz.udas.demo.entity.ReportDef" id="ReportDefMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="reportCode" column="report_code" jdbcType="VARCHAR"/>
+        <result property="reportName" column="report_name" jdbcType="VARCHAR"/>
+        <result property="tableName" column="table_name" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="orgCode" column="org_code" jdbcType="VARCHAR"/>
+        <result property="orgName" column="org_name" jdbcType="VARCHAR"/>
+        <result property="delFlag" column="del_flag" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="ReportDefMap">
+        select
+id, report_code, report_name, table_name, create_by, create_time, update_by, update_time, org_code, org_name, del_flag, status
+        from tb_report_def
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据（适配 offset/pageSize）-->
+    <select id="queryAllByLimit" resultMap="ReportDefMap">
+        select
+id, report_code, report_name, table_name, create_by, create_time, update_by, update_time, org_code, org_name, del_flag, status
+        from tb_report_def
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.reportCode != null and query.reportCode != ''">
+                and report_code = #{query.reportCode}
+            </if>
+            <if test="query.reportName != null and query.reportName != ''">
+                and report_name = #{query.reportName}
+            </if>
+            <if test="query.tableName != null and query.tableName != ''">
+                and table_name = #{query.tableName}
+            </if>
+            <if test="query.createBy != null and query.createBy != ''">
+                and create_by = #{query.createBy}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateBy != null and query.updateBy != ''">
+                and update_by = #{query.updateBy}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+            <if test="query.orgCode != null and query.orgCode != ''">
+                and org_code = #{query.orgCode}
+            </if>
+            <if test="query.orgName != null and query.orgName != ''">
+                and org_name = #{query.orgName}
+            </if>
+            <if test="query.delFlag != null">
+                and del_flag = #{query.delFlag}
+            </if>
+            <if test="query.status != null">
+                and status = #{query.status}
+            </if>
+        </where>
+    <if test="offset != null">
+        limit #{offset}, #{pageSize}
+    </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="selectCount" resultType="java.lang.Long">
+        select count(1)
+        from tb_report_def
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.reportCode != null and query.reportCode != ''">
+                and report_code = #{query.reportCode}
+            </if>
+            <if test="query.reportName != null and query.reportName != ''">
+                and report_name = #{query.reportName}
+            </if>
+            <if test="query.tableName != null and query.tableName != ''">
+                and table_name = #{query.tableName}
+            </if>
+            <if test="query.createBy != null and query.createBy != ''">
+                and create_by = #{query.createBy}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateBy != null and query.updateBy != ''">
+                and update_by = #{query.updateBy}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+            <if test="query.orgCode != null and query.orgCode != ''">
+                and org_code = #{query.orgCode}
+            </if>
+            <if test="query.orgName != null and query.orgName != ''">
+                and org_name = #{query.orgName}
+            </if>
+            <if test="query.delFlag != null">
+                and del_flag = #{query.delFlag}
+            </if>
+            <if test="query.status != null">
+                and status = #{query.status}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_report_def(report_code, report_name, table_name, create_by, create_time, update_by, update_time, org_code, org_name, del_flag, status)
+        values (#{reportCode}, #{reportName}, #{tableName}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{orgCode}, #{orgName}, #{delFlag}, #{status})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_report_def(report_code, report_name, table_name, create_by, create_time, update_by, update_time, org_code, org_name, del_flag, status)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.reportCode}, #{entity.reportName}, #{entity.tableName}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.orgCode}, #{entity.orgName}, #{entity.delFlag}, #{entity.status})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_report_def(report_code, report_name, table_name, create_by, create_time, update_by, update_time, org_code, org_name, del_flag, status)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.reportCode}, #{entity.reportName}, #{entity.tableName}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.orgCode}, #{entity.orgName}, #{entity.delFlag}, #{entity.status})
+        </foreach>
+        on duplicate key update
+report_code = values(report_code),
+report_name = values(report_name),
+table_name = values(table_name),
+create_by = values(create_by),
+create_time = values(create_time),
+update_by = values(update_by),
+update_time = values(update_time),
+org_code = values(org_code),
+org_name = values(org_name),
+del_flag = values(del_flag),
+status = values(status)    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_report_def
+        <set>
+            <if test="reportCode != null and reportCode != ''">
+                report_code = #{reportCode},
+            </if>
+            <if test="reportName != null and reportName != ''">
+                report_name = #{reportName},
+            </if>
+            <if test="tableName != null and tableName != ''">
+                table_name = #{tableName},
+            </if>
+            <if test="createBy != null and createBy != ''">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="orgCode != null and orgCode != ''">
+                org_code = #{orgCode},
+            </if>
+            <if test="orgName != null and orgName != ''">
+                org_name = #{orgName},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tb_report_def where id = #{id}
+    </delete>
+
+</mapper>
