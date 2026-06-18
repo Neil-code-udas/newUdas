@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.club.mapper.ClubBillDetailMapper">
+
+    <resultMap type="com.boshz.udas.club.entity.ClubBillDetail" id="ClubBillDetailMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="clubType" column="club_type" jdbcType="VARCHAR"/>
+        <result property="incomeExpend" column="income_expend" jdbcType="INTEGER"/>
+        <result property="projectId" column="project_id" jdbcType="INTEGER"/>
+        <result property="projectName" column="project_name" jdbcType="VARCHAR"/>
+        <result property="subjectCode" column="subject_code" jdbcType="VARCHAR"/>
+        <result property="subjectName" column="subject_name" jdbcType="VARCHAR"/>
+        <result property="budget" column="budget" jdbcType="NUMERIC"/>
+        <result property="incomeAmount" column="income_amount" jdbcType="NUMERIC"/>
+        <result property="membershipFee" column="membership_fee" jdbcType="NUMERIC"/>
+        <result property="writeOff" column="write_off" jdbcType="INTEGER"/>
+        <result property="expendTime" column="expend_time" jdbcType="TIMESTAMP"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="ClubBillDetailMap">
+        select id,
+               club_type,
+               income_expend,
+               project_id,
+               project_name,
+               subject_code,
+               subject_name,
+               budget,
+               income_amount,
+               membership_fee,
+               write_off,
+               expend_time,
+               remark,
+               create_time,
+               update_time
+        from tb_club_bill_detail
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据（适配 offset/pageSize）-->
+    <select id="queryAllByLimit" resultMap="ClubBillDetailMap">
+        select
+        id, club_type, income_expend, project_id, project_name, subject_code, subject_name, budget, income_amount,
+        membership_fee, write_off, expend_time, remark, create_time, update_time
+        from tb_club_bill_detail
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.clubType != null and query.clubType != ''">
+                and club_type = #{query.clubType}
+            </if>
+            <if test="query.incomeExpend != null">
+                and income_expend = #{query.incomeExpend}
+            </if>
+            <if test="query.projectId != null">
+                and project_id = #{query.projectId}
+            </if>
+            <if test="query.projectName != null and query.projectName != ''">
+                and project_name = #{query.projectName}
+            </if>
+            <if test="query.subjectCode != null and query.subjectCode != ''">
+                and subject_code = #{query.subjectCode}
+            </if>
+            <if test="query.subjectName != null and query.subjectName != ''">
+                and subject_name = #{query.subjectName}
+            </if>
+            <if test="query.budget != null">
+                and budget = #{query.budget}
+            </if>
+            <if test="query.incomeAmount != null">
+                and income_amount = #{query.incomeAmount}
+            </if>
+            <if test="query.membershipFee != null">
+                and membership_fee = #{query.membershipFee}
+            </if>
+            <if test="query.writeOff != null">
+                and write_off = #{query.writeOff}
+            </if>
+            <if test="query.expendTime != null">
+                and expend_time = #{query.expendTime}
+            </if>
+            <if test="query.remark != null and query.remark != ''">
+                and remark = #{query.remark}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+        </where>
+        <if test="offset != null">
+            limit #{offset}, #{pageSize}
+        </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="selectCount" resultType="java.lang.Long">
+        select count(1)
+        from tb_club_bill_detail
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.clubType != null and query.clubType != ''">
+                and club_type = #{query.clubType}
+            </if>
+            <if test="query.incomeExpend != null">
+                and income_expend = #{query.incomeExpend}
+            </if>
+            <if test="query.projectId != null">
+                and project_id = #{query.projectId}
+            </if>
+            <if test="query.projectName != null and query.projectName != ''">
+                and project_name = #{query.projectName}
+            </if>
+            <if test="query.subjectCode != null and query.subjectCode != ''">
+                and subject_code = #{query.subjectCode}
+            </if>
+            <if test="query.subjectName != null and query.subjectName != ''">
+                and subject_name = #{query.subjectName}
+            </if>
+            <if test="query.budget != null">
+                and budget = #{query.budget}
+            </if>
+            <if test="query.incomeAmount != null">
+                and income_amount = #{query.incomeAmount}
+            </if>
+            <if test="query.membershipFee != null">
+                and membership_fee = #{query.membershipFee}
+            </if>
+            <if test="query.writeOff != null">
+                and write_off = #{query.writeOff}
+            </if>
+            <if test="query.expendTime != null">
+                and expend_time = #{query.expendTime}
+            </if>
+            <if test="query.remark != null and query.remark != ''">
+                and remark = #{query.remark}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_club_bill_detail(club_type, income_expend, project_id, project_name, subject_code, subject_name,
+                                        budget, income_amount, membership_fee, write_off, expend_time, remark,
+                                        create_time, update_time)
+        values (#{clubType}, #{incomeExpend}, #{projectId}, #{projectName}, #{subjectCode}, #{subjectName}, #{budget},
+                #{incomeAmount}, #{membershipFee}, #{writeOff}, #{expendTime}, #{remark}, #{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_club_bill_detail(club_type, income_expend, project_id, project_name, subject_code, subject_name,
+        budget, income_amount, membership_fee, write_off, expend_time, remark, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.clubType}, #{entity.incomeExpend}, #{entity.projectId}, #{entity.projectName},
+            #{entity.subjectCode}, #{entity.subjectName}, #{entity.budget}, #{entity.incomeAmount},
+            #{entity.membershipFee}, #{entity.writeOff}, #{entity.expendTime}, #{entity.remark}, #{entity.createTime},
+            #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_club_bill_detail(club_type, income_expend, project_id, project_name, subject_code, subject_name,
+        budget, income_amount, membership_fee, write_off, expend_time, remark, create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.clubType}, #{entity.incomeExpend}, #{entity.projectId}, #{entity.projectName},
+            #{entity.subjectCode}, #{entity.subjectName}, #{entity.budget}, #{entity.incomeAmount},
+            #{entity.membershipFee}, #{entity.writeOff}, #{entity.expendTime}, #{entity.remark}, #{entity.createTime},
+            #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        club_type = values(club_type),
+        income_expend = values(income_expend),
+        project_id = values(project_id),
+        project_name = values(project_name),
+        subject_code = values(subject_code),
+        subject_name = values(subject_name),
+        budget = values(budget),
+        income_amount = values(income_amount),
+        membership_fee = values(membership_fee),
+        write_off = values(write_off),
+        expend_time = values(expend_time),
+        remark = values(remark),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_club_bill_detail
+        <set>
+            <if test="clubType != null and clubType != ''">
+                club_type = #{clubType},
+            </if>
+            <if test="incomeExpend != null">
+                income_expend = #{incomeExpend},
+            </if>
+            <if test="projectId != null">
+                project_id = #{projectId},
+            </if>
+            <if test="projectName != null and projectName != ''">
+                project_name = #{projectName},
+            </if>
+            <if test="subjectCode != null and subjectCode != ''">
+                subject_code = #{subjectCode},
+            </if>
+            <if test="subjectName != null and subjectName != ''">
+                subject_name = #{subjectName},
+            </if>
+            <if test="budget != null">
+                budget = #{budget},
+            </if>
+            <if test="incomeAmount != null">
+                income_amount = #{incomeAmount},
+            </if>
+            <if test="membershipFee != null">
+                membership_fee = #{membershipFee},
+            </if>
+            <if test="writeOff != null">
+                write_off = #{writeOff},
+            </if>
+            <if test="expendTime != null">
+                expend_time = #{expendTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from tb_club_bill_detail
+        where id = #{id}
+    </delete>
+
+
+    <select id="selectClubSummary" resultType="com.boshz.udas.club.vo.ClubSummaryVO">
+        SELECT
+            club_type AS clubName,
+            SUM(budget) AS budget,
+            SUM(CASE WHEN income_expend = 1 THEN income_amount ELSE 0 END) AS income,
+            SUM(CASE WHEN income_expend = 2 THEN budget + income_amount ELSE 0 END) AS expend,
+            (SUM(CASE WHEN income_expend = 1 THEN income_amount ELSE 0 END)
+                - SUM(CASE WHEN income_expend = 2 THEN budget + income_amount ELSE 0 END)) AS balance
+        FROM tb_club_bill_detail
+        GROUP BY club_type
+
+        UNION ALL
+
+        SELECT
+            '合计' AS clubName,
+            SUM(budget) AS budget,
+            SUM(CASE WHEN income_expend = 1 THEN income_amount ELSE 0 END) AS income,
+            SUM(CASE WHEN income_expend = 2 THEN budget + income_amount ELSE 0 END) AS expend,
+            (SUM(CASE WHEN income_expend = 1 THEN income_amount ELSE 0 END)
+                - SUM(CASE WHEN income_expend = 2 THEN budget + income_amount ELSE 0 END)) AS balance
+        FROM tb_club_bill_detail;
+    </select>
+
+</mapper>
