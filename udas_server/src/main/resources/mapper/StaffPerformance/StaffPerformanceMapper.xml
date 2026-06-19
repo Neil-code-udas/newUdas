@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.performance.mapper.StaffPerformanceMapper">
+
+    <resultMap type="com.boshz.udas.performance.entity.StaffPerformance" id="StaffPerformanceMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="period" column="period" jdbcType="VARCHAR"/>
+        <result property="staffNo" column="staff_no" jdbcType="VARCHAR"/>
+        <result property="staffName" column="staff_name" jdbcType="VARCHAR"/>
+        <result property="branchCode" column="branch_code" jdbcType="VARCHAR"/>
+        <result property="branchName" column="branch_name" jdbcType="VARCHAR"/>
+        <result property="keyWorkPerf" column="key_work_perf" jdbcType="VARCHAR"/>
+        <result property="networkEvalPerf" column="network_eval_perf" jdbcType="VARCHAR"/>
+        <result property="specialBonus" column="special_bonus" jdbcType="VARCHAR"/>
+        <result property="totalAmount" column="total_amount" jdbcType="VARCHAR"/>
+        <result property="promotion" column="promotion" jdbcType="VARCHAR"/>
+        <result property="account" column="account" jdbcType="VARCHAR"/>
+        <result property="cheok" column="cheok" jdbcType="VARCHAR"/>
+        <result property="bill" column="bill" jdbcType="VARCHAR"/>
+        <result property="cash" column="cash" jdbcType="VARCHAR"/>
+        <result property="score" column="score" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="StaffPerformanceMap">
+        select id,
+               period,
+               staff_no,
+               staff_name,
+               branch_code,
+               branch_name,
+               key_work_perf,
+               network_eval_perf,
+               special_bonus,
+               total_amount,
+               promotion,
+               account,
+               cheok,
+               bill,
+               cash,
+               score,
+               create_time
+        from tb_staff_performance
+        where id = #{id}
+    </select>
+
+    <!--根据条件查询全部数据（不分页）-->
+    <select id="selectByCondition" resultMap="StaffPerformanceMap">
+        select
+        id, period, staff_no, staff_name, branch_code, branch_name, key_work_perf, network_eval_perf, special_bonus,
+        total_amount, promotion, account, cheok, bill, cash, score, create_time from tb_staff_performance
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.period != null and query.period != ''">
+                and period = #{query.period}
+            </if>
+            <if test="query.staffNo != null and query.staffNo != ''">
+                and staff_no = #{query.staffNo}
+            </if>
+            <if test="query.staffName != null and query.staffName != ''">
+                and staff_name = #{query.staffName}
+            </if>
+            <if test="query.branchCode != null and query.branchCode != ''">
+                and branch_code = #{query.branchCode}
+            </if>
+            <if test="query.branchName != null and query.branchName != ''">
+                and branch_name = #{query.branchName}
+            </if>
+            <if test="query.keyWorkPerf != null">
+                and key_work_perf = #{query.keyWorkPerf}
+            </if>
+            <if test="query.networkEvalPerf != null">
+                and network_eval_perf = #{query.networkEvalPerf}
+            </if>
+            <if test="query.specialBonus != null">
+                and special_bonus = #{query.specialBonus}
+            </if>
+            <if test="query.totalAmount != null">
+                and total_amount = #{query.totalAmount}
+            </if>
+            <if test="query.promotion != null">
+                and promotion = #{query.promotion}
+            </if>
+            <if test="query.account != null">
+                and account = #{query.account}
+            </if>
+            <if test="query.cheok != null">
+                and cheok = #{query.cheok}
+            </if>
+            <if test="query.bill != null">
+                and bill = #{query.bill}
+            </if>
+            <if test="query.cash != null">
+                and cash = #{query.cash}
+            </if>
+            <if test="query.score != null">
+                and score = #{query.score}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--查询指定行数据（适配 offset/pageSize）-->
+    <select id="queryAllByLimit" resultMap="StaffPerformanceMap">
+        select
+        id, period, staff_no, staff_name, branch_code, branch_name, key_work_perf, network_eval_perf, special_bonus,
+        total_amount, promotion, account, cheok, bill, cash, score, create_time
+        from tb_staff_performance
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.period != null and query.period != ''">
+                and period = #{query.period}
+            </if>
+            <if test="query.staffNo != null and query.staffNo != ''">
+                and staff_no = #{query.staffNo}
+            </if>
+            <if test="query.staffName != null and query.staffName != ''">
+                and staff_name = #{query.staffName}
+            </if>
+            <if test="query.branchCode != null and query.branchCode != ''">
+                and branch_code = #{query.branchCode}
+            </if>
+            <if test="query.branchName != null and query.branchName != ''">
+                and branch_name = #{query.branchName}
+            </if>
+            <if test="query.keyWorkPerf != null">
+                and key_work_perf = #{query.keyWorkPerf}
+            </if>
+            <if test="query.networkEvalPerf != null">
+                and network_eval_perf = #{query.networkEvalPerf}
+            </if>
+            <if test="query.specialBonus != null">
+                and special_bonus = #{query.specialBonus}
+            </if>
+            <if test="query.totalAmount != null">
+                and total_amount = #{query.totalAmount}
+            </if>
+            <if test="query.promotion != null">
+                and promotion = #{query.promotion}
+            </if>
+            <if test="query.account != null">
+                and account = #{query.account}
+            </if>
+            <if test="query.cheok != null">
+                and cheok = #{query.cheok}
+            </if>
+            <if test="query.bill != null">
+                and bill = #{query.bill}
+            </if>
+            <if test="query.cash != null">
+                and cash = #{query.cash}
+            </if>
+            <if test="query.score != null">
+                and score = #{query.score}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+        </where>
+        <if test="offset != null">
+            limit #{offset}, #{pageSize}
+        </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="selectCount" resultType="java.lang.Long">
+        select count(1)
+        from tb_staff_performance
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.period != null and query.period != ''">
+                and period = #{query.period}
+            </if>
+            <if test="query.staffNo != null and query.staffNo != ''">
+                and staff_no = #{query.staffNo}
+            </if>
+            <if test="query.staffName != null and query.staffName != ''">
+                and staff_name = #{query.staffName}
+            </if>
+            <if test="query.branchCode != null and query.branchCode != ''">
+                and branch_code = #{query.branchCode}
+            </if>
+            <if test="query.branchName != null and query.branchName != ''">
+                and branch_name = #{query.branchName}
+            </if>
+            <if test="query.keyWorkPerf != null">
+                and key_work_perf = #{query.keyWorkPerf}
+            </if>
+            <if test="query.networkEvalPerf != null">
+                and network_eval_perf = #{query.networkEvalPerf}
+            </if>
+            <if test="query.specialBonus != null">
+                and special_bonus = #{query.specialBonus}
+            </if>
+            <if test="query.totalAmount != null">
+                and total_amount = #{query.totalAmount}
+            </if>
+            <if test="query.promotion != null">
+                and promotion = #{query.promotion}
+            </if>
+            <if test="query.account != null">
+                and account = #{query.account}
+            </if>
+            <if test="query.cheok != null">
+                and cheok = #{query.cheok}
+            </if>
+            <if test="query.bill != null">
+                and bill = #{query.bill}
+            </if>
+            <if test="query.cash != null">
+                and cash = #{query.cash}
+            </if>
+            <if test="query.score != null">
+                and score = #{query.score}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_staff_performance(period, staff_no, staff_name, branch_code, branch_name, key_work_perf,
+                                         network_eval_perf, special_bonus, total_amount, promotion, account, cheok,
+                                         bill, cash, score, create_time)
+        values (#{period}, #{staffNo}, #{staffName}, #{branchCode}, #{branchName}, #{keyWorkPerf}, #{networkEvalPerf},
+                #{specialBonus}, #{totalAmount}, #{promotion}, #{account}, #{cheok}, #{bill}, #{cash}, #{score},
+                #{createTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_staff_performance(period, staff_no, staff_name, branch_code, branch_name, key_work_perf,
+        network_eval_perf, special_bonus, total_amount, promotion, account, cheok, bill, cash, score, create_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.period}, #{entity.staffNo}, #{entity.staffName}, #{entity.branchCode}, #{entity.branchName},
+            #{entity.keyWorkPerf}, #{entity.networkEvalPerf}, #{entity.specialBonus}, #{entity.totalAmount},
+            #{entity.promotion}, #{entity.account}, #{entity.cheok}, #{entity.bill}, #{entity.cash}, #{entity.score},
+            #{entity.createTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_staff_performance(period, staff_no, staff_name, branch_code, branch_name, key_work_perf,
+        network_eval_perf, special_bonus, total_amount, promotion, account, cheok, bill, cash, score, create_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.period}, #{entity.staffNo}, #{entity.staffName}, #{entity.branchCode}, #{entity.branchName},
+            #{entity.keyWorkPerf}, #{entity.networkEvalPerf}, #{entity.specialBonus}, #{entity.totalAmount},
+            #{entity.promotion}, #{entity.account}, #{entity.cheok}, #{entity.bill}, #{entity.cash}, #{entity.score},
+            #{entity.createTime})
+        </foreach>
+        on duplicate key update
+        period = values(period),
+        staff_no = values(staff_no),
+        staff_name = values(staff_name),
+        branch_code = values(branch_code),
+        branch_name = values(branch_name),
+        key_work_perf = values(key_work_perf),
+        network_eval_perf = values(network_eval_perf),
+        special_bonus = values(special_bonus),
+        total_amount = values(total_amount),
+        promotion = values(promotion),
+        account = values(account),
+        cheok = values(cheok),
+        bill = values(bill),
+        cash = values(cash),
+        score = values(score),
+        create_time = values(create_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_staff_performance
+        <set>
+            <if test="period != null and period != ''">
+                period = #{period},
+            </if>
+            <if test="staffNo != null and staffNo != ''">
+                staff_no = #{staffNo},
+            </if>
+            <if test="staffName != null and staffName != ''">
+                staff_name = #{staffName},
+            </if>
+            <if test="branchCode != null and branchCode != ''">
+                branch_code = #{branchCode},
+            </if>
+            <if test="branchName != null and branchName != ''">
+                branch_name = #{branchName},
+            </if>
+            <if test="keyWorkPerf != null">
+                key_work_perf = #{keyWorkPerf},
+            </if>
+            <if test="networkEvalPerf != null">
+                network_eval_perf = #{networkEvalPerf},
+            </if>
+            <if test="specialBonus != null">
+                special_bonus = #{specialBonus},
+            </if>
+            <if test="totalAmount != null">
+                total_amount = #{totalAmount},
+            </if>
+            <if test="promotion != null">
+                promotion = #{promotion},
+            </if>
+            <if test="account != null">
+                account = #{account},
+            </if>
+            <if test="cheok != null">
+                cheok = #{cheok},
+            </if>
+            <if test="bill != null">
+                bill = #{bill},
+            </if>
+            <if test="cash != null">
+                cash = #{cash},
+            </if>
+            <if test="score != null">
+                score = #{score},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from tb_staff_performance
+        where id = #{id}
+    </delete>
+
+
+    <!-- 批量动态更新指定指标字段 -->
+    <update id="updatePerfField">
+            UPDATE tb_staff_performance
+            SET
+            <choose>
+                <when test="item.targetField == 'promotion'">promotion = #{item.amount}</when>
+                <when test="item.targetField == 'account'">account = #{item.amount}</when>
+                <when test="item.targetField == 'cheok'">cheok = #{item.amount}</when>
+                <when test="item.targetField == 'bill'">bill = #{item.amount}</when>
+                <when test="item.targetField == 'cash'">cash = #{item.amount}</when>
+                <when test="item.targetField == 'score'">score = #{item.amount}</when>
+                <otherwise>id = id</otherwise>
+            </choose>
+            WHERE period = #{period}
+            AND branch_code = #{branchCode}
+            AND staff_no = #{item.staffNo}
+    </update>
+
+
+    <select id="selectByPeriodStaffNo" resultMap="StaffPerformanceMap">
+        SELECT * FROM tb_staff_performance
+        WHERE period = #{period}
+          AND branch_code = #{branchCode}
+          AND staff_no = #{staffNo}
+    </select>
+    <!-- 根据周期+工号查询单条记录 -->
+
+</mapper>

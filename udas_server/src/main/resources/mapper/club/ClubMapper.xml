@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.club.mapper.ClubMapper">
+
+    <resultMap type="com.boshz.udas.club.entity.Club" id="ClubMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="year" column="year" jdbcType="VARCHAR"/>
+        <result property="clubCode" column="club_code" jdbcType="VARCHAR"/>
+        <result property="ioType" column="io_type" jdbcType="INTEGER"/>
+        <result property="tradeType" column="trade_type" jdbcType="VARCHAR"/>
+        <result property="tradeTime" column="trade_time" jdbcType="TIMESTAMP"/>
+        <result property="subject" column="subject" jdbcType="VARCHAR"/>
+        <result property="amount" column="amount" jdbcType="NUMERIC"/>
+        <result property="creator" column="creator" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="ClubMap">
+        select id,
+               year,
+               club_code,
+               io_type,
+               trade_type,
+               trade_time,
+               subject,
+               amount,
+               creator,
+               remark,
+               create_time,
+               update_time
+        from tb_club
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据（适配 offset/pageSize）-->
+    <select id="queryAllByLimit" resultMap="ClubMap">
+        select
+        id, year, club_code, io_type, trade_type, trade_time, subject, amount, creator, remark, create_time, update_time
+        from tb_club
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.year != null and query.year != ''">
+                and year = #{query.year}
+            </if>
+            <if test="query.clubCode != null and query.clubCode != ''">
+                and club_code = #{query.clubCode}
+            </if>
+            <if test="query.ioType != null">
+                and io_type = #{query.ioType}
+            </if>
+            <if test="query.tradeType != null and query.tradeType != ''">
+                and trade_type = #{query.tradeType}
+            </if>
+            <if test="query.tradeTime != null">
+                and trade_time = #{query.tradeTime}
+            </if>
+            <if test="query.subject != null and query.subject != ''">
+                and subject = #{query.subject}
+            </if>
+            <if test="query.amount != null">
+                and amount = #{query.amount}
+            </if>
+            <if test="query.creator != null and query.creator != ''">
+                and creator = #{query.creator}
+            </if>
+            <if test="query.remark != null and query.remark != ''">
+                and remark = #{query.remark}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+        </where>
+        <if test="offset != null">
+            limit #{offset}, #{pageSize}
+        </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="selectCount" resultType="java.lang.Long">
+        select count(1)
+        from tb_club
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.year != null and query.year != ''">
+                and year = #{query.year}
+            </if>
+            <if test="query.clubCode != null and query.clubCode != ''">
+                and club_code = #{query.clubCode}
+            </if>
+            <if test="query.ioType != null">
+                and io_type = #{query.ioType}
+            </if>
+            <if test="query.tradeType != null and query.tradeType != ''">
+                and trade_type = #{query.tradeType}
+            </if>
+            <if test="query.tradeTime != null">
+                and trade_time = #{query.tradeTime}
+            </if>
+            <if test="query.subject != null and query.subject != ''">
+                and subject = #{query.subject}
+            </if>
+            <if test="query.amount != null">
+                and amount = #{query.amount}
+            </if>
+            <if test="query.creator != null and query.creator != ''">
+                and creator = #{query.creator}
+            </if>
+            <if test="query.remark != null and query.remark != ''">
+                and remark = #{query.remark}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_club(year, club_code, io_type, trade_type, trade_time, subject, amount, creator, remark,
+                            create_time, update_time)
+        values (#{year}, #{clubCode}, #{ioType}, #{tradeType}, #{tradeTime}, #{subject}, #{amount}, #{creator},
+                #{remark}, #{createTime}, #{updateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_club(year, club_code, io_type, trade_type, trade_time, subject, amount, creator, remark,
+        create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.year}, #{entity.clubCode}, #{entity.ioType}, #{entity.tradeType}, #{entity.tradeTime},
+            #{entity.subject}, #{entity.amount}, #{entity.creator}, #{entity.remark}, #{entity.createTime},
+            #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_club(year, club_code, io_type, trade_type, trade_time, subject, amount, creator, remark,
+        create_time, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.year}, #{entity.clubCode}, #{entity.ioType}, #{entity.tradeType}, #{entity.tradeTime},
+            #{entity.subject}, #{entity.amount}, #{entity.creator}, #{entity.remark}, #{entity.createTime},
+            #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        year = values(year),
+        club_code = values(club_code),
+        io_type = values(io_type),
+        trade_type = values(trade_type),
+        trade_time = values(trade_time),
+        subject = values(subject),
+        amount = values(amount),
+        creator = values(creator),
+        remark = values(remark),
+        create_time = values(create_time),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_club
+        <set>
+            <if test="year != null and year != ''">
+                year = #{year},
+            </if>
+            <if test="clubCode != null and clubCode != ''">
+                club_code = #{clubCode},
+            </if>
+            <if test="ioType != null">
+                io_type = #{ioType},
+            </if>
+            <if test="tradeType != null and tradeType != ''">
+                trade_type = #{tradeType},
+            </if>
+            <if test="tradeTime != null">
+                trade_time = #{tradeTime},
+            </if>
+            <if test="subject != null and subject != ''">
+                subject = #{subject},
+            </if>
+            <if test="amount != null">
+                amount = #{amount},
+            </if>
+            <if test="creator != null and creator != ''">
+                creator = #{creator},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from tb_club
+        where id = #{id}
+    </delete>
+
+</mapper>

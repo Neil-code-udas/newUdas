@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.performance.mapper.BranchPerformanceMapper">
+
+    <resultMap type="com.boshz.udas.performance.entity.BranchPerformance" id="BranchPerformanceMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="period" column="period" jdbcType="VARCHAR"/>
+        <result property="branchCode" column="branch_code" jdbcType="VARCHAR"/>
+        <result property="branchName" column="branch_name" jdbcType="VARCHAR"/>
+        <result property="promotion1" column="promotion_1" jdbcType="VARCHAR"/>
+        <result property="promotion2" column="promotion_2" jdbcType="VARCHAR"/>
+        <result property="account1" column="account_1" jdbcType="VARCHAR"/>
+        <result property="account2" column="account_2" jdbcType="VARCHAR"/>
+        <result property="check1" column="check_1" jdbcType="VARCHAR"/>
+        <result property="check2" column="check_2" jdbcType="VARCHAR"/>
+        <result property="bill1" column="bill_1" jdbcType="VARCHAR"/>
+        <result property="bill2" column="bill_2" jdbcType="VARCHAR"/>
+        <result property="cash1" column="cash_1" jdbcType="VARCHAR"/>
+        <result property="cash2" column="cash_2" jdbcType="VARCHAR"/>
+        <result property="staffCount" column="staff_count" jdbcType="VARCHAR"/>
+        <result property="score" column="score" jdbcType="VARCHAR"/>
+        <result property="evaluateAmount" column="evaluate_amount" jdbcType="VARCHAR"/>
+        <result property="keyWorkCSub" column="key_work_c_sub" jdbcType="VARCHAR"/>
+        <result property="keyWorkDSub" column="key_work_d_sub" jdbcType="VARCHAR"/>
+        <result property="evaluateDSub" column="evaluate_d_sub" jdbcType="VARCHAR"/>
+        <result property="totalAllD" column="total_all_d" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="BranchPerformanceMap">
+        select
+id, period, branch_code, branch_name, promotion_1, promotion_2, account_1, account_2, check_1, check_2, bill_1, bill_2, cash_1, cash_2, staff_count, score, evaluate_amount, key_work_c_sub, key_work_d_sub, evaluate_d_sub, total_all_d, update_time, create_time
+        from tb_branch_performance
+        where id = #{id}
+    </select>
+
+    <!--根据条件查询全部数据（不分页）-->
+    <select id="selectByCondition" resultMap="BranchPerformanceMap">
+        select
+id, period, branch_code, branch_name, promotion_1, promotion_2, account_1, account_2, check_1, check_2, bill_1, bill_2, cash_1, cash_2, staff_count, score, evaluate_amount, key_work_c_sub, key_work_d_sub, evaluate_d_sub, total_all_d, update_time, create_time        from tb_branch_performance
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.period != null and query.period != ''">
+                and period = #{query.period}
+            </if>
+            <if test="query.branchCode != null and query.branchCode != ''">
+                and branch_code = #{query.branchCode}
+            </if>
+            <if test="query.branchName != null and query.branchName != ''">
+                and branch_name = #{query.branchName}
+            </if>
+            <if test="query.promotion1 != null">
+                and promotion_1 = #{query.promotion1}
+            </if>
+            <if test="query.promotion2 != null">
+                and promotion_2 = #{query.promotion2}
+            </if>
+            <if test="query.account1 != null">
+                and account_1 = #{query.account1}
+            </if>
+            <if test="query.account2 != null">
+                and account_2 = #{query.account2}
+            </if>
+            <if test="query.check1 != null">
+                and check_1 = #{query.check1}
+            </if>
+            <if test="query.check2 != null">
+                and check_2 = #{query.check2}
+            </if>
+            <if test="query.bill1 != null">
+                and bill_1 = #{query.bill1}
+            </if>
+            <if test="query.bill2 != null">
+                and bill_2 = #{query.bill2}
+            </if>
+            <if test="query.cash1 != null">
+                and cash_1 = #{query.cash1}
+            </if>
+            <if test="query.cash2 != null">
+                and cash_2 = #{query.cash2}
+            </if>
+            <if test="query.staffCount != null">
+                and staff_count = #{query.staffCount}
+            </if>
+            <if test="query.score != null">
+                and score = #{query.score}
+            </if>
+            <if test="query.evaluateAmount != null">
+                and evaluate_amount = #{query.evaluateAmount}
+            </if>
+            <if test="query.keyWorkCSub != null">
+                and key_work_c_sub = #{query.keyWorkCSub}
+            </if>
+            <if test="query.keyWorkDSub != null">
+                and key_work_d_sub = #{query.keyWorkDSub}
+            </if>
+            <if test="query.evaluateDSub != null">
+                and evaluate_d_sub = #{query.evaluateDSub}
+            </if>
+            <if test="query.totalAllD != null">
+                and total_all_d = #{query.totalAllD}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--查询指定行数据（适配 offset/pageSize）-->
+    <select id="queryAllByLimit" resultMap="BranchPerformanceMap">
+        select
+id, period, branch_code, branch_name, promotion_1, promotion_2, account_1, account_2, check_1, check_2, bill_1, bill_2, cash_1, cash_2, staff_count, score, evaluate_amount, key_work_c_sub, key_work_d_sub, evaluate_d_sub, total_all_d, update_time, create_time
+        from tb_branch_performance
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.period != null and query.period != ''">
+                and period = #{query.period}
+            </if>
+            <if test="query.branchCode != null and query.branchCode != ''">
+                and branch_code = #{query.branchCode}
+            </if>
+            <if test="query.branchName != null and query.branchName != ''">
+                and branch_name = #{query.branchName}
+            </if>
+            <if test="query.promotion1 != null">
+                and promotion_1 = #{query.promotion1}
+            </if>
+            <if test="query.promotion2 != null">
+                and promotion_2 = #{query.promotion2}
+            </if>
+            <if test="query.account1 != null">
+                and account_1 = #{query.account1}
+            </if>
+            <if test="query.account2 != null">
+                and account_2 = #{query.account2}
+            </if>
+            <if test="query.check1 != null">
+                and check_1 = #{query.check1}
+            </if>
+            <if test="query.check2 != null">
+                and check_2 = #{query.check2}
+            </if>
+            <if test="query.bill1 != null">
+                and bill_1 = #{query.bill1}
+            </if>
+            <if test="query.bill2 != null">
+                and bill_2 = #{query.bill2}
+            </if>
+            <if test="query.cash1 != null">
+                and cash_1 = #{query.cash1}
+            </if>
+            <if test="query.cash2 != null">
+                and cash_2 = #{query.cash2}
+            </if>
+            <if test="query.staffCount != null">
+                and staff_count = #{query.staffCount}
+            </if>
+            <if test="query.score != null">
+                and score = #{query.score}
+            </if>
+            <if test="query.evaluateAmount != null">
+                and evaluate_amount = #{query.evaluateAmount}
+            </if>
+            <if test="query.keyWorkCSub != null">
+                and key_work_c_sub = #{query.keyWorkCSub}
+            </if>
+            <if test="query.keyWorkDSub != null">
+                and key_work_d_sub = #{query.keyWorkDSub}
+            </if>
+            <if test="query.evaluateDSub != null">
+                and evaluate_d_sub = #{query.evaluateDSub}
+            </if>
+            <if test="query.totalAllD != null">
+                and total_all_d = #{query.totalAllD}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+        </where>
+    <if test="offset != null">
+        limit #{offset}, #{pageSize}
+    </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="selectCount" resultType="java.lang.Long">
+        select count(1)
+        from tb_branch_performance
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.period != null and query.period != ''">
+                and period = #{query.period}
+            </if>
+            <if test="query.branchCode != null and query.branchCode != ''">
+                and branch_code = #{query.branchCode}
+            </if>
+            <if test="query.branchName != null and query.branchName != ''">
+                and branch_name = #{query.branchName}
+            </if>
+            <if test="query.promotion1 != null">
+                and promotion_1 = #{query.promotion1}
+            </if>
+            <if test="query.promotion2 != null">
+                and promotion_2 = #{query.promotion2}
+            </if>
+            <if test="query.account1 != null">
+                and account_1 = #{query.account1}
+            </if>
+            <if test="query.account2 != null">
+                and account_2 = #{query.account2}
+            </if>
+            <if test="query.check1 != null">
+                and check_1 = #{query.check1}
+            </if>
+            <if test="query.check2 != null">
+                and check_2 = #{query.check2}
+            </if>
+            <if test="query.bill1 != null">
+                and bill_1 = #{query.bill1}
+            </if>
+            <if test="query.bill2 != null">
+                and bill_2 = #{query.bill2}
+            </if>
+            <if test="query.cash1 != null">
+                and cash_1 = #{query.cash1}
+            </if>
+            <if test="query.cash2 != null">
+                and cash_2 = #{query.cash2}
+            </if>
+            <if test="query.staffCount != null">
+                and staff_count = #{query.staffCount}
+            </if>
+            <if test="query.score != null">
+                and score = #{query.score}
+            </if>
+            <if test="query.evaluateAmount != null">
+                and evaluate_amount = #{query.evaluateAmount}
+            </if>
+            <if test="query.keyWorkCSub != null">
+                and key_work_c_sub = #{query.keyWorkCSub}
+            </if>
+            <if test="query.keyWorkDSub != null">
+                and key_work_d_sub = #{query.keyWorkDSub}
+            </if>
+            <if test="query.evaluateDSub != null">
+                and evaluate_d_sub = #{query.evaluateDSub}
+            </if>
+            <if test="query.totalAllD != null">
+                and total_all_d = #{query.totalAllD}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_branch_performance(period, branch_code, branch_name, promotion_1, promotion_2, account_1, account_2, check_1, check_2, bill_1, bill_2, cash_1, cash_2, staff_count, score, evaluate_amount, key_work_c_sub, key_work_d_sub, evaluate_d_sub, total_all_d, update_time, create_time)
+        values (#{period}, #{branchCode}, #{branchName}, #{promotion1}, #{promotion2}, #{account1}, #{account2}, #{check1}, #{check2}, #{bill1}, #{bill2}, #{cash1}, #{cash2}, #{staffCount}, #{score}, #{evaluateAmount}, #{keyWorkCSub}, #{keyWorkDSub}, #{evaluateDSub}, #{totalAllD}, #{updateTime}, #{createTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_branch_performance(period, branch_code, branch_name, promotion_1, promotion_2, account_1, account_2, check_1, check_2, bill_1, bill_2, cash_1, cash_2, staff_count, score, evaluate_amount, key_work_c_sub, key_work_d_sub, evaluate_d_sub, total_all_d, update_time, create_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.period}, #{entity.branchCode}, #{entity.branchName}, #{entity.promotion1}, #{entity.promotion2}, #{entity.account1}, #{entity.account2}, #{entity.check1}, #{entity.check2}, #{entity.bill1}, #{entity.bill2}, #{entity.cash1}, #{entity.cash2}, #{entity.staffCount}, #{entity.score}, #{entity.evaluateAmount}, #{entity.keyWorkCSub}, #{entity.keyWorkDSub}, #{entity.evaluateDSub}, #{entity.totalAllD}, #{entity.updateTime}, #{entity.createTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_branch_performance(period, branch_code, branch_name, promotion_1, promotion_2, account_1, account_2, check_1, check_2, bill_1, bill_2, cash_1, cash_2, staff_count, score, evaluate_amount, key_work_c_sub, key_work_d_sub, evaluate_d_sub, total_all_d, update_time, create_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.period}, #{entity.branchCode}, #{entity.branchName}, #{entity.promotion1}, #{entity.promotion2}, #{entity.account1}, #{entity.account2}, #{entity.check1}, #{entity.check2}, #{entity.bill1}, #{entity.bill2}, #{entity.cash1}, #{entity.cash2}, #{entity.staffCount}, #{entity.score}, #{entity.evaluateAmount}, #{entity.keyWorkCSub}, #{entity.keyWorkDSub}, #{entity.evaluateDSub}, #{entity.totalAllD}, #{entity.updateTime}, #{entity.createTime})
+        </foreach>
+        on duplicate key update
+period = values(period),
+branch_code = values(branch_code),
+branch_name = values(branch_name),
+promotion_1 = values(promotion_1),
+promotion_2 = values(promotion_2),
+account_1 = values(account_1),
+account_2 = values(account_2),
+check_1 = values(check_1),
+check_2 = values(check_2),
+bill_1 = values(bill_1),
+bill_2 = values(bill_2),
+cash_1 = values(cash_1),
+cash_2 = values(cash_2),
+staff_count = values(staff_count),
+score = values(score),
+evaluate_amount = values(evaluate_amount),
+key_work_c_sub = values(key_work_c_sub),
+key_work_d_sub = values(key_work_d_sub),
+evaluate_d_sub = values(evaluate_d_sub),
+total_all_d = values(total_all_d),
+update_time = values(update_time),
+create_time = values(create_time)    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_branch_performance
+        <set>
+            <if test="period != null and period != ''">
+                period = #{period},
+            </if>
+            <if test="branchCode != null and branchCode != ''">
+                branch_code = #{branchCode},
+            </if>
+            <if test="branchName != null and branchName != ''">
+                branch_name = #{branchName},
+            </if>
+            <if test="promotion1 != null">
+                promotion_1 = #{promotion1},
+            </if>
+            <if test="promotion2 != null">
+                promotion_2 = #{promotion2},
+            </if>
+            <if test="account1 != null">
+                account_1 = #{account1},
+            </if>
+            <if test="account2 != null">
+                account_2 = #{account2},
+            </if>
+            <if test="check1 != null">
+                check_1 = #{check1},
+            </if>
+            <if test="check2 != null">
+                check_2 = #{check2},
+            </if>
+            <if test="bill1 != null">
+                bill_1 = #{bill1},
+            </if>
+            <if test="bill2 != null">
+                bill_2 = #{bill2},
+            </if>
+            <if test="cash1 != null">
+                cash_1 = #{cash1},
+            </if>
+            <if test="cash2 != null">
+                cash_2 = #{cash2},
+            </if>
+            <if test="staffCount != null">
+                staff_count = #{staffCount},
+            </if>
+            <if test="score != null">
+                score = #{score},
+            </if>
+            <if test="evaluateAmount != null">
+                evaluate_amount = #{evaluateAmount},
+            </if>
+            <if test="keyWorkCSub != null">
+                key_work_c_sub = #{keyWorkCSub},
+            </if>
+            <if test="keyWorkDSub != null">
+                key_work_d_sub = #{keyWorkDSub},
+            </if>
+            <if test="evaluateDSub != null">
+                evaluate_d_sub = #{evaluateDSub},
+            </if>
+            <if test="totalAllD != null">
+                total_all_d = #{totalAllD},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from tb_branch_performance where id = #{id}
+    </delete>
+
+</mapper>

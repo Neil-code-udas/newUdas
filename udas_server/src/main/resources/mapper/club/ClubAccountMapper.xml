@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.club.mapper.ClubAccountMapper">
+
+    <!-- 1. 查询年度全部流水明细 -->
+    <select id="selectAllDetailByYear" resultType="java.util.Map">
+        SELECT
+            club_code,
+            io_type,
+            trade_type,
+            trade_time,
+            subject,
+            amount,
+            remark
+        FROM tb_club
+        WHERE year = #{year}
+        ORDER BY club_code, io_type DESC, trade_type, trade_time;
+    </select>
+
+    <!-- 2. 查询各俱乐部汇总金额，区分场地费单独统计 -->
+    <select id="selectClubSumByYear" resultType="com.boshz.udas.club.vo.ClubItemVO">
+        SELECT
+            t.club_code,
+            CASE t.club_code
+                WHEN 'HZ_BSK' THEN '杭州-篮球'
+                WHEN 'WZ_BSK' THEN '温州-篮球'
+                WHEN 'HZ_BDM' THEN '杭州-羽毛球'
+                WHEN 'SX_BDM' THEN '绍兴-羽毛球'
+                WHEN 'DEP2_BDM' THEN '营业部2-羽毛球'
+                WHEN 'HZ_HIK' THEN '杭州-毅行'
+                WHEN 'HZ_TJ' THEN '杭州-太极'
+                WHEN 'SX_RUN' THEN '绍兴-跑步'
+                WHEN 'BR_RUN' THEN '分行-向上跑'
+                WHEN 'BR_DNC' THEN '分行-旗舞'
+                ELSE '未知俱乐部'
+                END AS club_name,
+            -- 会费分组总金额：历年结余 + 当年会费收入
+            SUM(IF(t.io_type = 1 AND t.trade_type IN ('历年结余','会费'), t.amount, 0)) AS incomeFeeSum,
+            -- 收入经费合计（经费、奖励）
+            SUM(IF(t.io_type = 1 AND t.trade_type IN ('经费','奖励'), t.amount, 0)) AS incomeFundSum,
+            -- 总收入小计
+            SUM(IF(t.io_type = 1, t.amount, 0)) AS incomeTotal,
+            -- 支出-会费合计
+            SUM(IF(t.io_type = 2 AND t.trade_type = '会费', t.amount, 0)) AS outFeeSum,
+            -- 支出经费全部流水合计（场地+文体活动，前端展示明细用）
+            SUM(IF(t.io_type = 2 AND t.trade_type = '经费', t.amount, 0)) AS outFundSum,
+            -- 单独场地费总额（科目=场地费）
+            SUM(IF(t.io_type = 2 AND t.trade_type = '经费' AND t.subject = '场地费', t.amount, 0)) AS siteFeeTotal,
+            -- 实际总支出：仅会费支出，剔除场地费
+            SUM(IF(t.io_type = 2 AND NOT (t.trade_type = '经费' AND t.subject = '场地费'), t.amount, 0)) AS outTotal,
+            -- 当年结余 = 总收入 - 不含场地费的总支出
+            SUM(IF(t.io_type = 1, t.amount, 0)) - SUM(IF(t.io_type = 2 AND NOT (t.trade_type = '经费' AND t.subject = '场地费'), t.amount, 0)) AS yearSurplus
+        FROM tb_club t
+        WHERE t.year = #{year}
+        GROUP BY t.club_code
+        ORDER BY t.club_code;
+    </select>
+</mapper>
