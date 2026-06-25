@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.io.IOException;
 
@@ -93,7 +94,8 @@ public class ClubController {
      * @param year 年度，例：2025、2026
      */
     @PostMapping("/queryYearDetail")
-    public ResultVO<ClubYearTotalVO> queryYearClubDetail(@RequestParam String year) {
+    public ResultVO<ClubYearTotalVO> queryYearClubDetail(@RequestBody HashMap<String, String> query) {
+        String year = query.get("year");
         ClubYearTotalVO data = clubAccountService.getYearClubAccountDetail(year);
         return ResultVOUtil.success(data);
     }
