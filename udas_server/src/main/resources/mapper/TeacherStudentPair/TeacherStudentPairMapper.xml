@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.pair.mapper.TeacherStudentPairMapper">
+
+    <resultMap type="com.boshz.udas.pair.entity.TeacherStudentPair" id="TeacherStudentPairMap">
+        <result property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="teacherAccount" column="teacher_account" jdbcType="VARCHAR"/>
+        <result property="teacherName" column="teacher_name" jdbcType="VARCHAR"/>
+        <result property="teacherLevel" column="teacher_level" jdbcType="INTEGER"/>
+        <result property="studentAccount" column="student_account" jdbcType="VARCHAR"/>
+        <result property="studentName" column="student_name" jdbcType="VARCHAR"/>
+        <result property="studentLevel" column="student_level" jdbcType="INTEGER"/>
+        <result property="orgId" column="org_id" jdbcType="VARCHAR"/>
+        <result property="orgName" column="org_name" jdbcType="VARCHAR"/>
+        <result property="pairStatus" column="pair_status" jdbcType="VARCHAR"/>
+        <result property="startDate" column="start_date" jdbcType="TIMESTAMP"/>
+        <result property="endDate" column="end_date" jdbcType="TIMESTAMP"/>
+        <result property="signFileUrl" column="sign_file_url" jdbcType="VARCHAR"/>
+        <result property="createAccount" column="create_account" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateAccount" column="update_account" jdbcType="VARCHAR"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="TeacherStudentPairMap">
+        select id,
+               teacher_account,
+               teacher_name,
+               teacher_level,
+               student_account,
+               student_name,
+               student_level,
+               org_id,
+               org_name,
+               pair_status,
+               start_date,
+               end_date,
+               sign_file_url,
+               create_account,
+               create_time,
+               update_account,
+               update_time
+        from tb_teacher_student_pair
+        where id = #{id}
+    </select>
+
+    <!--根据条件查询全部数据（不分页）-->
+    <select id="selectByCondition" resultMap="TeacherStudentPairMap">
+        select
+        id, teacher_account, teacher_name, teacher_level, student_account, student_name, student_level, org_id,
+        org_name, pair_status, start_date, end_date, sign_file_url, create_account, create_time, update_account,
+        update_time from tb_teacher_student_pair
+        <where>
+            <if test="query.id != null and query.id != ''">
+                and id = #{query.id}
+            </if>
+            <if test="query.teacherAccount != null and query.teacherAccount != ''">
+                and teacher_account = #{query.teacherAccount}
+            </if>
+            <if test="query.teacherName != null and query.teacherName != ''">
+                and teacher_name = #{query.teacherName}
+            </if>
+            <if test="query.teacherLevel != null">
+                and teacher_level = #{query.teacherLevel}
+            </if>
+            <if test="query.studentAccount != null and query.studentAccount != ''">
+                and student_account = #{query.studentAccount}
+            </if>
+            <if test="query.studentName != null and query.studentName != ''">
+                and student_name = #{query.studentName}
+            </if>
+            <if test="query.studentLevel != null">
+                and student_level = #{query.studentLevel}
+            </if>
+            <if test="query.orgId != null and query.orgId != ''">
+                and org_id = #{query.orgId}
+            </if>
+            <if test="query.orgName != null and query.orgName != ''">
+                and org_name = #{query.orgName}
+            </if>
+            <if test="query.pairStatus != null and query.pairStatus != ''">
+                and pair_status = #{query.pairStatus}
+            </if>
+            <if test="query.startDate != null">
+                and start_date = #{query.startDate}
+            </if>
+            <if test="query.endDate != null">
+                and end_date = #{query.endDate}
+            </if>
+            <if test="query.signFileUrl != null and query.signFileUrl != ''">
+                and sign_file_url = #{query.signFileUrl}
+            </if>
+            <if test="query.createAccount != null and query.createAccount != ''">
+                and create_account = #{query.createAccount}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateAccount != null and query.updateAccount != ''">
+                and update_account = #{query.updateAccount}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--查询指定行数据（适配 offset/pageSize）-->
+    <select id="queryAllByLimit" resultMap="TeacherStudentPairMap">
+        select
+        id, teacher_account, teacher_name, teacher_level, student_account, student_name, student_level, org_id,
+        org_name, pair_status, start_date, end_date, sign_file_url, create_account, create_time, update_account,
+        update_time
+        from tb_teacher_student_pair
+        <where>
+            <if test="query.id != null and query.id != ''">
+                and id = #{query.id}
+            </if>
+            <if test="query.teacherAccount != null and query.teacherAccount != ''">
+                and teacher_account = #{query.teacherAccount}
+            </if>
+            <if test="query.teacherName != null and query.teacherName != ''">
+                and teacher_name = #{query.teacherName}
+            </if>
+            <if test="query.teacherLevel != null">
+                and teacher_level = #{query.teacherLevel}
+            </if>
+            <if test="query.studentAccount != null and query.studentAccount != ''">
+                and student_account = #{query.studentAccount}
+            </if>
+            <if test="query.studentName != null and query.studentName != ''">
+                and student_name = #{query.studentName}
+            </if>
+            <if test="query.studentLevel != null">
+                and student_level = #{query.studentLevel}
+            </if>
+            <if test="query.orgId != null and query.orgId != ''">
+                and org_id = #{query.orgId}
+            </if>
+            <if test="query.orgName != null and query.orgName != ''">
+                and org_name = #{query.orgName}
+            </if>
+            <if test="query.pairStatus != null and query.pairStatus != ''">
+                and pair_status = #{query.pairStatus}
+            </if>
+            <if test="query.startDate != null">
+                and start_date = #{query.startDate}
+            </if>
+            <if test="query.endDate != null">
+                and end_date = #{query.endDate}
+            </if>
+            <if test="query.signFileUrl != null and query.signFileUrl != ''">
+                and sign_file_url = #{query.signFileUrl}
+            </if>
+            <if test="query.createAccount != null and query.createAccount != ''">
+                and create_account = #{query.createAccount}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateAccount != null and query.updateAccount != ''">
+                and update_account = #{query.updateAccount}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+        </where>
+        <if test="offset != null">
+            limit #{offset}, #{pageSize}
+        </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="selectCount" resultType="java.lang.Long">
+        select count(1)
+        from tb_teacher_student_pair
+        <where>
+            <if test="query.id != null and query.id != ''">
+                and id = #{query.id}
+            </if>
+            <if test="query.teacherAccount != null and query.teacherAccount != ''">
+                and teacher_account = #{query.teacherAccount}
+            </if>
+            <if test="query.teacherName != null and query.teacherName != ''">
+                and teacher_name = #{query.teacherName}
+            </if>
+            <if test="query.teacherLevel != null">
+                and teacher_level = #{query.teacherLevel}
+            </if>
+            <if test="query.studentAccount != null and query.studentAccount != ''">
+                and student_account = #{query.studentAccount}
+            </if>
+            <if test="query.studentName != null and query.studentName != ''">
+                and student_name = #{query.studentName}
+            </if>
+            <if test="query.studentLevel != null">
+                and student_level = #{query.studentLevel}
+            </if>
+            <if test="query.orgId != null and query.orgId != ''">
+                and org_id = #{query.orgId}
+            </if>
+            <if test="query.orgName != null and query.orgName != ''">
+                and org_name = #{query.orgName}
+            </if>
+            <if test="query.pairStatus != null and query.pairStatus != ''">
+                and pair_status = #{query.pairStatus}
+            </if>
+            <if test="query.startDate != null">
+                and start_date = #{query.startDate}
+            </if>
+            <if test="query.endDate != null">
+                and end_date = #{query.endDate}
+            </if>
+            <if test="query.signFileUrl != null and query.signFileUrl != ''">
+                and sign_file_url = #{query.signFileUrl}
+            </if>
+            <if test="query.createAccount != null and query.createAccount != ''">
+                and create_account = #{query.createAccount}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+            <if test="query.updateAccount != null and query.updateAccount != ''">
+                and update_account = #{query.updateAccount}
+            </if>
+            <if test="query.updateTime != null">
+                and update_time = #{query.updateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_teacher_student_pair(teacher_account, teacher_name, teacher_level, student_account, student_name,
+                                            student_level, org_id, org_name, pair_status, start_date, end_date,
+                                            sign_file_url, create_account, create_time, update_account, update_time)
+        values (#{teacherAccount}, #{teacherName}, #{teacherLevel}, #{studentAccount}, #{studentName}, #{studentLevel},
+                #{orgId}, #{orgName}, #{pairStatus}, #{startDate}, #{endDate}, #{signFileUrl}, #{createAccount},
+                #{createTime}, #{updateAccount}, #{updateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_teacher_student_pair(teacher_account, teacher_name, teacher_level, student_account, student_name,
+        student_level, org_id, org_name, pair_status, start_date, end_date, sign_file_url, create_account, create_time,
+        update_account, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.teacherAccount}, #{entity.teacherName}, #{entity.teacherLevel}, #{entity.studentAccount},
+            #{entity.studentName}, #{entity.studentLevel}, #{entity.orgId}, #{entity.orgName}, #{entity.pairStatus},
+            #{entity.startDate}, #{entity.endDate}, #{entity.signFileUrl}, #{entity.createAccount},
+            #{entity.createTime}, #{entity.updateAccount}, #{entity.updateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_teacher_student_pair(teacher_account, teacher_name, teacher_level, student_account, student_name,
+        student_level, org_id, org_name, pair_status, start_date, end_date, sign_file_url, create_account, create_time,
+        update_account, update_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.teacherAccount}, #{entity.teacherName}, #{entity.teacherLevel}, #{entity.studentAccount},
+            #{entity.studentName}, #{entity.studentLevel}, #{entity.orgId}, #{entity.orgName}, #{entity.pairStatus},
+            #{entity.startDate}, #{entity.endDate}, #{entity.signFileUrl}, #{entity.createAccount},
+            #{entity.createTime}, #{entity.updateAccount}, #{entity.updateTime})
+        </foreach>
+        on duplicate key update
+        teacher_account = values(teacher_account),
+        teacher_name = values(teacher_name),
+        teacher_level = values(teacher_level),
+        student_account = values(student_account),
+        student_name = values(student_name),
+        student_level = values(student_level),
+        org_id = values(org_id),
+        org_name = values(org_name),
+        pair_status = values(pair_status),
+        start_date = values(start_date),
+        end_date = values(end_date),
+        sign_file_url = values(sign_file_url),
+        create_account = values(create_account),
+        create_time = values(create_time),
+        update_account = values(update_account),
+        update_time = values(update_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_teacher_student_pair
+        <set>
+            <if test="teacherAccount != null and teacherAccount != ''">
+                teacher_account = #{teacherAccount},
+            </if>
+            <if test="teacherName != null and teacherName != ''">
+                teacher_name = #{teacherName},
+            </if>
+            <if test="teacherLevel != null">
+                teacher_level = #{teacherLevel},
+            </if>
+            <if test="studentAccount != null and studentAccount != ''">
+                student_account = #{studentAccount},
+            </if>
+            <if test="studentName != null and studentName != ''">
+                student_name = #{studentName},
+            </if>
+            <if test="studentLevel != null">
+                student_level = #{studentLevel},
+            </if>
+            <if test="orgId != null and orgId != ''">
+                org_id = #{orgId},
+            </if>
+            <if test="orgName != null and orgName != ''">
+                org_name = #{orgName},
+            </if>
+            <if test="pairStatus != null and pairStatus != ''">
+                pair_status = #{pairStatus},
+            </if>
+            <if test="startDate != null">
+                start_date = #{startDate},
+            </if>
+            <if test="endDate != null">
+                end_date = #{endDate},
+            </if>
+            <if test="signFileUrl != null and signFileUrl != ''">
+                sign_file_url = #{signFileUrl},
+            </if>
+            <if test="createAccount != null and createAccount != ''">
+                create_account = #{createAccount},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateAccount != null and updateAccount != ''">
+                update_account = #{updateAccount},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from tb_teacher_student_pair
+        where id = #{id}
+    </delete>
+
+</mapper>

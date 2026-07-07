@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.pair.mapper.PairMapper">
+
+    <!-- 新增师徒结对记录 -->
+    <insert id="insert" useGeneratedKeys="false">
+        INSERT INTO tb_teacher_student_pair
+        (id, teacher_account, teacher_name, teacher_level, student_account, student_name, student_level,
+         org_id, org_name, pair_status, start_date, end_date, sign_file_url, create_account)
+        VALUES
+            (#{id}, #{teacherAccount}, #{teacherName}, #{teacherLevel}, #{studentAccount}, #{studentName}, #{studentLevel},
+             #{orgId}, #{orgName}, #{pairStatus}, #{startDate}, #{endDate}, #{signFileUrl}, #{createAccount})
+    </insert>
+
+    <!-- 根据TP结对编号查询单条结对详情 -->
+    <select id="selectById" resultType="com.boshz.udas.pair.entity.TeacherStudentPair">
+        SELECT
+            id,
+            teacher_account AS teacherAccount,
+            teacher_name AS teacherName,
+            teacher_level AS teacherLevel,
+            student_account AS studentAccount,
+            student_name AS studentName,
+            student_level AS studentLevel,
+            org_id AS orgId,
+            org_name AS orgName,
+            pair_status AS pairStatus,
+            start_date AS startDate,
+            end_date AS endDate,
+            sign_file_url AS signFileUrl,
+            create_account AS createAccount,
+            create_time AS createTime,
+            update_account AS updateAccount,
+            update_time AS updateTime
+        FROM tb_teacher_student_pair
+        WHERE id = #{pairId}
+    </select>
+
+    <!-- 台账列表分页查询 -->
+    <select id="selectList" resultType="com.boshz.udas.pair.entity.TeacherStudentPair">
+        SELECT
+        id,
+        teacher_account AS teacherAccount,
+        teacher_name AS teacherName,
+        teacher_level AS teacherLevel,
+        student_account AS studentAccount,
+        student_name AS studentName,
+        student_level AS studentLevel,
+        org_id AS orgId,
+        org_name AS orgName,
+        pair_status AS pairStatus,
+        start_date AS startDate,
+        end_date AS endDate,
+        sign_file_url AS signFileUrl,
+        create_account AS createAccount,
+        create_time AS createTime,
+        update_account AS updateAccount,
+        update_time AS updateTime
+        FROM tb_teacher_student_pair
+        <where>
+            <if test="orgId != null and orgId != ''">
+                org_id = #{orgId}
+            </if>
+            <if test="jobType != null and jobType != '' and jobType != 'CUSTOMER'">
+                <!-- 过滤客户经理旧方案人员 -->
+            </if>
+            <if test="keyword != null and keyword != ''">
+                CONCAT(teacher_name, student_name) LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 查询符合条件师父列表（13职等、在岗满2年、无在培徒弟） -->
+    <select id="selectTeacherList" resultType="com.boshz.udas.pair.dto.StaffDTO">
+        SELECT
+            account,
+            name,
+            level,
+            work_year AS workYear,
+            is_manager AS isManager,
+            job_type AS jobType
+        FROM staff_info
+        WHERE level >= 13
+          AND work_year >= 2
+          AND account NOT IN (
+            SELECT teacher_account FROM tb_teacher_student_pair WHERE pair_status = 'TRAINING'
+        )
+          AND org_id = #{orgId}
+    </select>
+
+    <!-- 查询符合条件徒弟列表（14/15职等、入职未满1年、无在培师父） -->
+    <select id="selectStudentList" resultType="com.boshz.udas.pair.dto.StaffDTO">
+        SELECT
+            account,
+            name,
+            level,
+            job_type AS jobType
+        FROM staff_info
+        WHERE level IN (14, 15)
+          AND account NOT IN (
+            SELECT student_account FROM tb_teacher_student_pair WHERE pair_status = 'TRAINING'
+        )
+          AND org_id = #{orgId}
+    </select>
+
+</mapper>

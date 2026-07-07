@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.pair.mapper.PairTimeLineMapper">
+
+    <resultMap type="com.boshz.udas.pair.entity.PairTimeLine" id="PairTimeLineMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="pairId" column="pair_id" jdbcType="VARCHAR"/>
+        <result property="operateAccount" column="operate_account" jdbcType="VARCHAR"/>
+        <result property="operateUserName" column="operate_user_name" jdbcType="VARCHAR"/>
+        <result property="operateType" column="operate_type" jdbcType="VARCHAR"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="score" column="score" jdbcType="VARCHAR"/>
+        <result property="fileUrls" column="file_urls" jdbcType="VARCHAR"/>
+        <result property="operateTime" column="operate_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="PairTimeLineMap">
+        select id,
+               pair_id,
+               operate_account,
+               operate_user_name,
+               operate_type,
+               content,
+               score,
+               file_urls,
+               operate_time
+        from tb_pair_time_line
+        where id = #{id}
+    </select>
+
+    <!--根据条件查询全部数据（不分页）-->
+    <select id="selectByCondition" resultMap="PairTimeLineMap">
+        select
+        id, pair_id, operate_account, operate_user_name, operate_type, content, score, file_urls, operate_time from
+        tb_pair_time_line
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.pairId != null and query.pairId != ''">
+                and pair_id = #{query.pairId}
+            </if>
+            <if test="query.operateAccount != null and query.operateAccount != ''">
+                and operate_account = #{query.operateAccount}
+            </if>
+            <if test="query.operateUserName != null and query.operateUserName != ''">
+                and operate_user_name = #{query.operateUserName}
+            </if>
+            <if test="query.operateType != null and query.operateType != ''">
+                and operate_type = #{query.operateType}
+            </if>
+            <if test="query.content != null and query.content != ''">
+                and content = #{query.content}
+            </if>
+            <if test="query.score != null">
+                and score = #{query.score}
+            </if>
+            <if test="query.fileUrls != null and query.fileUrls != ''">
+                and file_urls = #{query.fileUrls}
+            </if>
+            <if test="query.operateTime != null">
+                and operate_time = #{query.operateTime}
+            </if>
+        </where>
+    </select>
+
+    <!--查询指定行数据（适配 offset/pageSize）-->
+    <select id="queryAllByLimit" resultMap="PairTimeLineMap">
+        select
+        id, pair_id, operate_account, operate_user_name, operate_type, content, score, file_urls, operate_time
+        from tb_pair_time_line
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.pairId != null and query.pairId != ''">
+                and pair_id = #{query.pairId}
+            </if>
+            <if test="query.operateAccount != null and query.operateAccount != ''">
+                and operate_account = #{query.operateAccount}
+            </if>
+            <if test="query.operateUserName != null and query.operateUserName != ''">
+                and operate_user_name = #{query.operateUserName}
+            </if>
+            <if test="query.operateType != null and query.operateType != ''">
+                and operate_type = #{query.operateType}
+            </if>
+            <if test="query.content != null and query.content != ''">
+                and content = #{query.content}
+            </if>
+            <if test="query.score != null">
+                and score = #{query.score}
+            </if>
+            <if test="query.fileUrls != null and query.fileUrls != ''">
+                and file_urls = #{query.fileUrls}
+            </if>
+            <if test="query.operateTime != null">
+                and operate_time = #{query.operateTime}
+            </if>
+        </where>
+        <if test="offset != null">
+            limit #{offset}, #{pageSize}
+        </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="selectCount" resultType="java.lang.Long">
+        select count(1)
+        from tb_pair_time_line
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.pairId != null and query.pairId != ''">
+                and pair_id = #{query.pairId}
+            </if>
+            <if test="query.operateAccount != null and query.operateAccount != ''">
+                and operate_account = #{query.operateAccount}
+            </if>
+            <if test="query.operateUserName != null and query.operateUserName != ''">
+                and operate_user_name = #{query.operateUserName}
+            </if>
+            <if test="query.operateType != null and query.operateType != ''">
+                and operate_type = #{query.operateType}
+            </if>
+            <if test="query.content != null and query.content != ''">
+                and content = #{query.content}
+            </if>
+            <if test="query.score != null">
+                and score = #{query.score}
+            </if>
+            <if test="query.fileUrls != null and query.fileUrls != ''">
+                and file_urls = #{query.fileUrls}
+            </if>
+            <if test="query.operateTime != null">
+                and operate_time = #{query.operateTime}
+            </if>
+        </where>
+    </select>
+    <select id="selectByPairId" resultType="com.boshz.udas.pair.entity.PairTimeLine">
+        SELECT
+            id,
+            pair_id AS pairId,
+            operate_account AS operateAccount,
+            operate_user_name AS operateUserName,
+            operate_type AS operateType,
+            content,
+            score,
+            file_urls AS fileUrls,
+            operate_time AS operateTime
+        FROM tb_pair_time_line
+        WHERE pair_id = #{pairId}
+        ORDER BY operate_time DESC
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_pair_time_line(pair_id, operate_account, operate_user_name, operate_type, content, score,
+                                      file_urls, operate_time)
+        values (#{pairId}, #{operateAccount}, #{operateUserName}, #{operateType}, #{content}, #{score}, #{fileUrls},
+                #{operateTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_pair_time_line(pair_id, operate_account, operate_user_name, operate_type, content, score,
+        file_urls, operate_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.pairId}, #{entity.operateAccount}, #{entity.operateUserName}, #{entity.operateType},
+            #{entity.content}, #{entity.score}, #{entity.fileUrls}, #{entity.operateTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_pair_time_line(pair_id, operate_account, operate_user_name, operate_type, content, score,
+        file_urls, operate_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.pairId}, #{entity.operateAccount}, #{entity.operateUserName}, #{entity.operateType},
+            #{entity.content}, #{entity.score}, #{entity.fileUrls}, #{entity.operateTime})
+        </foreach>
+        on duplicate key update
+        pair_id = values(pair_id),
+        operate_account = values(operate_account),
+        operate_user_name = values(operate_user_name),
+        operate_type = values(operate_type),
+        content = values(content),
+        score = values(score),
+        file_urls = values(file_urls),
+        operate_time = values(operate_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_pair_time_line
+        <set>
+            <if test="pairId != null and pairId != ''">
+                pair_id = #{pairId},
+            </if>
+            <if test="operateAccount != null and operateAccount != ''">
+                operate_account = #{operateAccount},
+            </if>
+            <if test="operateUserName != null and operateUserName != ''">
+                operate_user_name = #{operateUserName},
+            </if>
+            <if test="operateType != null and operateType != ''">
+                operate_type = #{operateType},
+            </if>
+            <if test="content != null and content != ''">
+                content = #{content},
+            </if>
+            <if test="score != null">
+                score = #{score},
+            </if>
+            <if test="fileUrls != null and fileUrls != ''">
+                file_urls = #{fileUrls},
+            </if>
+            <if test="operateTime != null">
+                operate_time = #{operateTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from tb_pair_time_line
+        where id = #{id}
+    </delete>
+
+</mapper>

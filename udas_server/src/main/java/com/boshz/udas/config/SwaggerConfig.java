@@ -20,7 +20,7 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo())
                 .select()
                 // 替换成你项目的 Controller 所在包路径
-                .apis(RequestHandlerSelectors.basePackage("com.boshz.udas"))
+                .apis(RequestHandlerSelectors.basePackage("com.boshz.udas.pair"))
                 .paths(PathSelectors.any())
                 .build();
     }
