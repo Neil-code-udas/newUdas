@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.mealTicket.mapper.MealTicketMapper">
+
+    <resultMap type="com.boshz.udas.mealTicket.entity.MealTicket" id="MealTicketMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="applyName" column="apply_name" jdbcType="VARCHAR"/>
+        <result property="applyAccount" column="apply_account" jdbcType="VARCHAR"/>
+        <result property="deptName" column="dept_name" jdbcType="VARCHAR"/>
+        <result property="deptCode" column="dept_code" jdbcType="VARCHAR"/>
+        <result property="handlerName" column="handler_name" jdbcType="VARCHAR"/>
+        <result property="handlerCode" column="handler_code" jdbcType="VARCHAR"/>
+        <result property="officeName" column="office_name" jdbcType="VARCHAR"/>
+        <result property="officeCode" column="office_code" jdbcType="VARCHAR"/>
+        <result property="officeHandlerName" column="office_handler_name" jdbcType="VARCHAR"/>
+        <result property="officeHandlerCode" column="office_handler_code" jdbcType="VARCHAR"/>
+        <result property="mealDate" column="meal_date" jdbcType="TIMESTAMP"/>
+        <result property="mealLocation" column="meal_location" jdbcType="VARCHAR"/>
+        <result property="attendNum" column="attend_num" jdbcType="INTEGER"/>
+        <result property="internName" column="intern_name" jdbcType="VARCHAR"/>
+        <result property="mealReason" column="meal_reason" jdbcType="VARCHAR"/>
+        <result property="fileIds" column="file_ids" jdbcType="VARCHAR"/>
+        <result property="flowType" column="flow_type" jdbcType="VARCHAR"/>
+        <result property="applyDate" column="apply_date" jdbcType="TIMESTAMP"/>
+        <result property="applyNo" column="apply_no" jdbcType="VARCHAR"/>
+        <result property="node" column="node" jdbcType="VARCHAR"/>
+        <result property="nodeState" column="node_state" jdbcType="VARCHAR"/>
+        <result property="flowStatus" column="flow_status" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="startTime" column="start_time" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="MealTicketMap">
+        select id,
+               apply_name,
+               apply_account,
+               dept_name,
+               dept_code,
+               handler_name,
+               handler_code,
+               office_name,
+               office_code,
+               office_handler_name,
+               office_handler_code,
+               meal_date,
+               meal_location,
+               attend_num,
+               intern_name,
+               meal_reason,
+               file_ids,
+               flow_type,
+               apply_date,
+               apply_no,
+               node,
+               node_state,
+               flow_status,
+               status,
+               start_time,
+               end_time
+        from tb_meal_ticket
+        where id = #{id}
+    </select>
+
+    <!--根据条件查询全部数据（不分页）-->
+    <select id="selectByCondition" resultMap="MealTicketMap">
+        select
+        id, apply_name, apply_account, dept_name, dept_code, handler_name, handler_code, office_name, office_code,
+        office_handler_name, office_handler_code, meal_date, meal_location, attend_num, intern_name, meal_reason,
+        file_ids, flow_type, apply_date, apply_no, node, node_state, flow_status, status, start_time, end_time from
+        tb_meal_ticket
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.applyName != null and query.applyName != ''">
+                and apply_name = #{query.applyName}
+            </if>
+            <if test="query.applyAccount != null and query.applyAccount != ''">
+                and apply_account = #{query.applyAccount}
+            </if>
+            <if test="query.deptName != null and query.deptName != ''">
+                and dept_name = #{query.deptName}
+            </if>
+            <if test="query.deptCode != null and query.deptCode != ''">
+                and dept_code = #{query.deptCode}
+            </if>
+            <if test="query.handlerName != null and query.handlerName != ''">
+                and handler_name = #{query.handlerName}
+            </if>
+            <if test="query.handlerCode != null and query.handlerCode != ''">
+                and handler_code = #{query.handlerCode}
+            </if>
+            <if test="query.officeName != null and query.officeName != ''">
+                and office_name = #{query.officeName}
+            </if>
+            <if test="query.officeCode != null and query.officeCode != ''">
+                and office_code = #{query.officeCode}
+            </if>
+            <if test="query.officeHandlerName != null and query.officeHandlerName != ''">
+                and office_handler_name = #{query.officeHandlerName}
+            </if>
+            <if test="query.officeHandlerCode != null and query.officeHandlerCode != ''">
+                and office_handler_code = #{query.officeHandlerCode}
+            </if>
+            <if test="query.mealDate != null">
+                and meal_date = #{query.mealDate}
+            </if>
+            <if test="query.mealLocation != null and query.mealLocation != ''">
+                and meal_location = #{query.mealLocation}
+            </if>
+            <if test="query.attendNum != null">
+                and attend_num = #{query.attendNum}
+            </if>
+            <if test="query.internName != null and query.internName != ''">
+                and intern_name = #{query.internName}
+            </if>
+            <if test="query.mealReason != null and query.mealReason != ''">
+                and meal_reason = #{query.mealReason}
+            </if>
+            <if test="query.fileIds != null and query.fileIds != ''">
+                and file_ids = #{query.fileIds}
+            </if>
+            <if test="query.flowType != null and query.flowType != ''">
+                and flow_type = #{query.flowType}
+            </if>
+            <if test="query.applyDate != null">
+                and apply_date = #{query.applyDate}
+            </if>
+            <if test="query.applyNo != null and query.applyNo != ''">
+                and apply_no = #{query.applyNo}
+            </if>
+            <if test="query.node != null and query.node != ''">
+                and node = #{query.node}
+            </if>
+            <if test="query.nodeState != null and query.nodeState != ''">
+                and node_state = #{query.nodeState}
+            </if>
+            <if test="query.flowStatus != null and query.flowStatus != ''">
+                and flow_status = #{query.flowStatus}
+            </if>
+            <if test="query.status != null and query.status != ''">
+                and status = #{query.status}
+            </if>
+            <if test="query.startTime != null">
+                and start_time = #{query.startTime}
+            </if>
+            <if test="query.endTime != null">
+                and end_time = #{query.endTime}
+            </if>
+        </where>
+    </select>
+
+    <!--查询指定行数据（适配 offset/pageSize）-->
+    <select id="queryAllByLimit" resultMap="MealTicketMap">
+        select
+        id, apply_name, apply_account, dept_name, dept_code, handler_name, handler_code, office_name, office_code,
+        office_handler_name, office_handler_code, meal_date, meal_location, attend_num, intern_name, meal_reason,
+        file_ids, flow_type, apply_date, apply_no, node, node_state, flow_status, status, start_time, end_time
+        from tb_meal_ticket
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.applyName != null and query.applyName != ''">
+                and apply_name = #{query.applyName}
+            </if>
+            <if test="query.applyAccount != null and query.applyAccount != ''">
+                and apply_account = #{query.applyAccount}
+            </if>
+            <if test="query.deptName != null and query.deptName != ''">
+                and dept_name = #{query.deptName}
+            </if>
+            <if test="query.deptCode != null and query.deptCode != ''">
+                and dept_code = #{query.deptCode}
+            </if>
+            <if test="query.handlerName != null and query.handlerName != ''">
+                and handler_name = #{query.handlerName}
+            </if>
+            <if test="query.handlerCode != null and query.handlerCode != ''">
+                and handler_code = #{query.handlerCode}
+            </if>
+            <if test="query.officeName != null and query.officeName != ''">
+                and office_name = #{query.officeName}
+            </if>
+            <if test="query.officeCode != null and query.officeCode != ''">
+                and office_code = #{query.officeCode}
+            </if>
+            <if test="query.officeHandlerName != null and query.officeHandlerName != ''">
+                and office_handler_name = #{query.officeHandlerName}
+            </if>
+            <if test="query.officeHandlerCode != null and query.officeHandlerCode != ''">
+                and office_handler_code = #{query.officeHandlerCode}
+            </if>
+            <if test="query.mealDate != null">
+                and meal_date = #{query.mealDate}
+            </if>
+            <if test="query.mealLocation != null and query.mealLocation != ''">
+                and meal_location = #{query.mealLocation}
+            </if>
+            <if test="query.attendNum != null">
+                and attend_num = #{query.attendNum}
+            </if>
+            <if test="query.internName != null and query.internName != ''">
+                and intern_name = #{query.internName}
+            </if>
+            <if test="query.mealReason != null and query.mealReason != ''">
+                and meal_reason = #{query.mealReason}
+            </if>
+            <if test="query.fileIds != null and query.fileIds != ''">
+                and file_ids = #{query.fileIds}
+            </if>
+            <if test="query.flowType != null and query.flowType != ''">
+                and flow_type = #{query.flowType}
+            </if>
+            <if test="query.applyDate != null">
+                and apply_date = #{query.applyDate}
+            </if>
+            <if test="query.applyNo != null and query.applyNo != ''">
+                and apply_no = #{query.applyNo}
+            </if>
+            <if test="query.node != null and query.node != ''">
+                and node = #{query.node}
+            </if>
+            <if test="query.nodeState != null and query.nodeState != ''">
+                and node_state = #{query.nodeState}
+            </if>
+            <if test="query.flowStatus != null and query.flowStatus != ''">
+                and flow_status = #{query.flowStatus}
+            </if>
+            <if test="query.status != null and query.status != ''">
+                and status = #{query.status}
+            </if>
+            <if test="query.startTime != null">
+                and start_time = #{query.startTime}
+            </if>
+            <if test="query.endTime != null">
+                and end_time = #{query.endTime}
+            </if>
+        </where>
+        <if test="offset != null">
+            limit #{offset}, #{pageSize}
+        </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="selectCount" resultType="java.lang.Long">
+        select count(1)
+        from tb_meal_ticket
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.applyName != null and query.applyName != ''">
+                and apply_name = #{query.applyName}
+            </if>
+            <if test="query.applyAccount != null and query.applyAccount != ''">
+                and apply_account = #{query.applyAccount}
+            </if>
+            <if test="query.deptName != null and query.deptName != ''">
+                and dept_name = #{query.deptName}
+            </if>
+            <if test="query.deptCode != null and query.deptCode != ''">
+                and dept_code = #{query.deptCode}
+            </if>
+            <if test="query.handlerName != null and query.handlerName != ''">
+                and handler_name = #{query.handlerName}
+            </if>
+            <if test="query.handlerCode != null and query.handlerCode != ''">
+                and handler_code = #{query.handlerCode}
+            </if>
+            <if test="query.officeName != null and query.officeName != ''">
+                and office_name = #{query.officeName}
+            </if>
+            <if test="query.officeCode != null and query.officeCode != ''">
+                and office_code = #{query.officeCode}
+            </if>
+            <if test="query.officeHandlerName != null and query.officeHandlerName != ''">
+                and office_handler_name = #{query.officeHandlerName}
+            </if>
+            <if test="query.officeHandlerCode != null and query.officeHandlerCode != ''">
+                and office_handler_code = #{query.officeHandlerCode}
+            </if>
+            <if test="query.mealDate != null">
+                and meal_date = #{query.mealDate}
+            </if>
+            <if test="query.mealLocation != null and query.mealLocation != ''">
+                and meal_location = #{query.mealLocation}
+            </if>
+            <if test="query.attendNum != null">
+                and attend_num = #{query.attendNum}
+            </if>
+            <if test="query.internName != null and query.internName != ''">
+                and intern_name = #{query.internName}
+            </if>
+            <if test="query.mealReason != null and query.mealReason != ''">
+                and meal_reason = #{query.mealReason}
+            </if>
+            <if test="query.fileIds != null and query.fileIds != ''">
+                and file_ids = #{query.fileIds}
+            </if>
+            <if test="query.flowType != null and query.flowType != ''">
+                and flow_type = #{query.flowType}
+            </if>
+            <if test="query.applyDate != null">
+                and apply_date = #{query.applyDate}
+            </if>
+            <if test="query.applyNo != null and query.applyNo != ''">
+                and apply_no = #{query.applyNo}
+            </if>
+            <if test="query.node != null and query.node != ''">
+                and node = #{query.node}
+            </if>
+            <if test="query.nodeState != null and query.nodeState != ''">
+                and node_state = #{query.nodeState}
+            </if>
+            <if test="query.flowStatus != null and query.flowStatus != ''">
+                and flow_status = #{query.flowStatus}
+            </if>
+            <if test="query.status != null and query.status != ''">
+                and status = #{query.status}
+            </if>
+            <if test="query.startTime != null">
+                and start_time = #{query.startTime}
+            </if>
+            <if test="query.endTime != null">
+                and end_time = #{query.endTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_meal_ticket(apply_name, apply_account, dept_name, dept_code, handler_name, handler_code,
+                                   office_name, office_code, office_handler_name, office_handler_code, meal_date,
+                                   meal_location, attend_num, intern_name, meal_reason, file_ids, flow_type, apply_date,
+                                   apply_no, node, node_state, flow_status, status, start_time, end_time)
+        values (#{applyName}, #{applyAccount}, #{deptName}, #{deptCode}, #{handlerName}, #{handlerCode}, #{officeName},
+                #{officeCode}, #{officeHandlerName}, #{officeHandlerCode}, #{mealDate}, #{mealLocation}, #{attendNum},
+                #{internName}, #{mealReason}, #{fileIds}, #{flowType}, #{applyDate}, #{applyNo}, #{node}, #{nodeState},
+                #{flowStatus}, #{status}, #{startTime}, #{endTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_meal_ticket(apply_name, apply_account, dept_name, dept_code, handler_name, handler_code,
+        office_name, office_code, office_handler_name, office_handler_code, meal_date, meal_location, attend_num,
+        intern_name, meal_reason, file_ids, flow_type, apply_date, apply_no, node, node_state, flow_status, status,
+        start_time, end_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.applyName}, #{entity.applyAccount}, #{entity.deptName}, #{entity.deptCode}, #{entity.handlerName},
+            #{entity.handlerCode}, #{entity.officeName}, #{entity.officeCode}, #{entity.officeHandlerName},
+            #{entity.officeHandlerCode}, #{entity.mealDate}, #{entity.mealLocation}, #{entity.attendNum},
+            #{entity.internName}, #{entity.mealReason}, #{entity.fileIds}, #{entity.flowType}, #{entity.applyDate},
+            #{entity.applyNo}, #{entity.node}, #{entity.nodeState}, #{entity.flowStatus}, #{entity.status},
+            #{entity.startTime}, #{entity.endTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_meal_ticket(apply_name, apply_account, dept_name, dept_code, handler_name, handler_code,
+        office_name, office_code, office_handler_name, office_handler_code, meal_date, meal_location, attend_num,
+        intern_name, meal_reason, file_ids, flow_type, apply_date, apply_no, node, node_state, flow_status, status,
+        start_time, end_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.applyName}, #{entity.applyAccount}, #{entity.deptName}, #{entity.deptCode}, #{entity.handlerName},
+            #{entity.handlerCode}, #{entity.officeName}, #{entity.officeCode}, #{entity.officeHandlerName},
+            #{entity.officeHandlerCode}, #{entity.mealDate}, #{entity.mealLocation}, #{entity.attendNum},
+            #{entity.internName}, #{entity.mealReason}, #{entity.fileIds}, #{entity.flowType}, #{entity.applyDate},
+            #{entity.applyNo}, #{entity.node}, #{entity.nodeState}, #{entity.flowStatus}, #{entity.status},
+            #{entity.startTime}, #{entity.endTime})
+        </foreach>
+        on duplicate key update
+        apply_name = values(apply_name),
+        apply_account = values(apply_account),
+        dept_name = values(dept_name),
+        dept_code = values(dept_code),
+        handler_name = values(handler_name),
+        handler_code = values(handler_code),
+        office_name = values(office_name),
+        office_code = values(office_code),
+        office_handler_name = values(office_handler_name),
+        office_handler_code = values(office_handler_code),
+        meal_date = values(meal_date),
+        meal_location = values(meal_location),
+        attend_num = values(attend_num),
+        intern_name = values(intern_name),
+        meal_reason = values(meal_reason),
+        file_ids = values(file_ids),
+        flow_type = values(flow_type),
+        apply_date = values(apply_date),
+        apply_no = values(apply_no),
+        node = values(node),
+        node_state = values(node_state),
+        flow_status = values(flow_status),
+        status = values(status),
+        start_time = values(start_time),
+        end_time = values(end_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_meal_ticket
+        <set>
+            <if test="applyName != null and applyName != ''">
+                apply_name = #{applyName},
+            </if>
+            <if test="applyAccount != null and applyAccount != ''">
+                apply_account = #{applyAccount},
+            </if>
+            <if test="deptName != null and deptName != ''">
+                dept_name = #{deptName},
+            </if>
+            <if test="deptCode != null and deptCode != ''">
+                dept_code = #{deptCode},
+            </if>
+            <if test="handlerName != null and handlerName != ''">
+                handler_name = #{handlerName},
+            </if>
+            <if test="handlerCode != null and handlerCode != ''">
+                handler_code = #{handlerCode},
+            </if>
+            <if test="officeName != null and officeName != ''">
+                office_name = #{officeName},
+            </if>
+            <if test="officeCode != null and officeCode != ''">
+                office_code = #{officeCode},
+            </if>
+            <if test="officeHandlerName != null and officeHandlerName != ''">
+                office_handler_name = #{officeHandlerName},
+            </if>
+            <if test="officeHandlerCode != null and officeHandlerCode != ''">
+                office_handler_code = #{officeHandlerCode},
+            </if>
+            <if test="mealDate != null">
+                meal_date = #{mealDate},
+            </if>
+            <if test="mealLocation != null and mealLocation != ''">
+                meal_location = #{mealLocation},
+            </if>
+            <if test="attendNum != null">
+                attend_num = #{attendNum},
+            </if>
+            <if test="internName != null and internName != ''">
+                intern_name = #{internName},
+            </if>
+            <if test="mealReason != null and mealReason != ''">
+                meal_reason = #{mealReason},
+            </if>
+            <if test="fileIds != null and fileIds != ''">
+                file_ids = #{fileIds},
+            </if>
+            <if test="flowType != null and flowType != ''">
+                flow_type = #{flowType},
+            </if>
+            <if test="applyDate != null">
+                apply_date = #{applyDate},
+            </if>
+            <if test="applyNo != null and applyNo != ''">
+                apply_no = #{applyNo},
+            </if>
+            <if test="node != null and node != ''">
+                node = #{node},
+            </if>
+            <if test="nodeState != null and nodeState != ''">
+                node_state = #{nodeState},
+            </if>
+            <if test="flowStatus != null and flowStatus != ''">
+                flow_status = #{flowStatus},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status},
+            </if>
+            <if test="startTime != null">
+                start_time = #{startTime},
+            </if>
+            <if test="endTime != null">
+                end_time = #{endTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from tb_meal_ticket
+        where id = #{id}
+    </delete>
+
+</mapper>

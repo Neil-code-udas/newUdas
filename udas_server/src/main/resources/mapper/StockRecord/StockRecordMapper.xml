@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boshz.udas.material.mapper.StockRecordMapper">
+
+    <resultMap type="com.boshz.udas.material.entity.StockRecord" id="StockRecordMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="materialId" column="material_id" jdbcType="INTEGER"/>
+        <result property="changeType" column="change_type" jdbcType="VARCHAR"/>
+        <result property="changeNum" column="change_num" jdbcType="VARCHAR"/>
+        <result property="beforeStock" column="before_stock" jdbcType="VARCHAR"/>
+        <result property="afterStock" column="after_stock" jdbcType="VARCHAR"/>
+        <result property="usePerson" column="use_person" jdbcType="VARCHAR"/>
+        <result property="remark" column="remark" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectById" resultMap="StockRecordMap">
+        select id,
+               material_id,
+               change_type,
+               change_num,
+               before_stock,
+               after_stock,
+               use_person,
+               remark,
+               create_time
+        from tb_stock_record
+        where id = #{id}
+    </select>
+
+    <!--根据条件查询全部数据（不分页）-->
+    <select id="selectByCondition" resultMap="StockRecordMap">
+        select
+        id, material_id, change_type, change_num, before_stock, after_stock, use_person, remark, create_time from
+        tb_stock_record
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.materialId != null">
+                and material_id = #{query.materialId}
+            </if>
+            <if test="query.changeType != null and query.changeType != ''">
+                and change_type = #{query.changeType}
+            </if>
+            <if test="query.changeNum != null">
+                and change_num = #{query.changeNum}
+            </if>
+            <if test="query.beforeStock != null">
+                and before_stock = #{query.beforeStock}
+            </if>
+            <if test="query.afterStock != null">
+                and after_stock = #{query.afterStock}
+            </if>
+            <if test="query.usePerson != null and query.usePerson != ''">
+                and use_person = #{query.usePerson}
+            </if>
+            <if test="query.remark != null and query.remark != ''">
+                and remark = #{query.remark}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--查询指定行数据（适配 offset/pageSize）-->
+    <select id="queryAllByLimit" resultMap="StockRecordMap">
+        select
+        id, material_id, change_type, change_num, before_stock, after_stock, use_person, remark, create_time
+        from tb_stock_record
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.materialId != null">
+                and material_id = #{query.materialId}
+            </if>
+            <if test="query.changeType != null and query.changeType != ''">
+                and change_type = #{query.changeType}
+            </if>
+            <if test="query.changeNum != null">
+                and change_num = #{query.changeNum}
+            </if>
+            <if test="query.beforeStock != null">
+                and before_stock = #{query.beforeStock}
+            </if>
+            <if test="query.afterStock != null">
+                and after_stock = #{query.afterStock}
+            </if>
+            <if test="query.usePerson != null and query.usePerson != ''">
+                and use_person = #{query.usePerson}
+            </if>
+            <if test="query.remark != null and query.remark != ''">
+                and remark = #{query.remark}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+        </where>
+        <if test="offset != null">
+            limit #{offset}, #{pageSize}
+        </if>
+    </select>
+
+    <!--统计总行数-->
+    <select id="selectCount" resultType="java.lang.Long">
+        select count(1)
+        from tb_stock_record
+        <where>
+            <if test="query.id != null">
+                and id = #{query.id}
+            </if>
+            <if test="query.materialId != null">
+                and material_id = #{query.materialId}
+            </if>
+            <if test="query.changeType != null and query.changeType != ''">
+                and change_type = #{query.changeType}
+            </if>
+            <if test="query.changeNum != null">
+                and change_num = #{query.changeNum}
+            </if>
+            <if test="query.beforeStock != null">
+                and before_stock = #{query.beforeStock}
+            </if>
+            <if test="query.afterStock != null">
+                and after_stock = #{query.afterStock}
+            </if>
+            <if test="query.usePerson != null and query.usePerson != ''">
+                and use_person = #{query.usePerson}
+            </if>
+            <if test="query.remark != null and query.remark != ''">
+                and remark = #{query.remark}
+            </if>
+            <if test="query.createTime != null">
+                and create_time = #{query.createTime}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_stock_record(material_id, change_type, change_num, before_stock, after_stock, use_person, remark,
+                                    create_time)
+        values (#{materialId}, #{changeType}, #{changeNum}, #{beforeStock}, #{afterStock}, #{usePerson}, #{remark},
+                #{createTime})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_stock_record(material_id, change_type, change_num, before_stock, after_stock, use_person, remark,
+        create_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.materialId}, #{entity.changeType}, #{entity.changeNum}, #{entity.beforeStock},
+            #{entity.afterStock}, #{entity.usePerson}, #{entity.remark}, #{entity.createTime})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into tb_stock_record(material_id, change_type, change_num, before_stock, after_stock, use_person, remark,
+        create_time)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.materialId}, #{entity.changeType}, #{entity.changeNum}, #{entity.beforeStock},
+            #{entity.afterStock}, #{entity.usePerson}, #{entity.remark}, #{entity.createTime})
+        </foreach>
+        on duplicate key update
+        material_id = values(material_id),
+        change_type = values(change_type),
+        change_num = values(change_num),
+        before_stock = values(before_stock),
+        after_stock = values(after_stock),
+        use_person = values(use_person),
+        remark = values(remark),
+        create_time = values(create_time)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update tb_stock_record
+        <set>
+            <if test="materialId != null">
+                material_id = #{materialId},
+            </if>
+            <if test="changeType != null and changeType != ''">
+                change_type = #{changeType},
+            </if>
+            <if test="changeNum != null">
+                change_num = #{changeNum},
+            </if>
+            <if test="beforeStock != null">
+                before_stock = #{beforeStock},
+            </if>
+            <if test="afterStock != null">
+                after_stock = #{afterStock},
+            </if>
+            <if test="usePerson != null and usePerson != ''">
+                use_person = #{usePerson},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete
+        from tb_stock_record
+        where id = #{id}
+    </delete>
+
+    <select id="selectRecordList"  resultMap="StockRecordMap">
+        SELECT
+        r.*,
+        m.material_name,
+        m.unit
+        FROM tb_stock_record r
+        LEFT JOIN tb_material m ON r.material_id = m.id
+        <where>
+            <if test="dto.startTime != null and dto.startTime != ''">
+                DATE(r.create_time) &gt;= #{dto.startTime}
+            </if>
+            <if test="dto.endTime != null and dto.endTime != ''">
+                DATE(r.create_time) &lt;= #{dto.endTime}
+            </if>
+            <if test="dto.materialName != null and dto.materialName != ''">
+                m.material_name LIKE CONCAT('%',#{dto.materialName},'%')
+            </if>
+            <if test="dto.changeType != null and dto.changeType != ''">
+                r.change_type = #{dto.changeType}
+            </if>
+            <if test="dto.usePerson != null and dto.usePerson != ''">
+                r.use_person LIKE CONCAT('%',#{dto.usePerson},'%')
+            </if>
+        </where>
+        ORDER BY r.create_time DESC
+    </select>
+
+</mapper>

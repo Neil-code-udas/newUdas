@@ -1,131 +1,74 @@
-select * from tb_teacher_student_pair;
+#物品出入库流水
+select * from tb_material
+DROP TABLE IF EXISTS tb_material;
+CREATE TABLE tb_material (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键ID',
+    material_name VARCHAR(100) NOT NULL COMMENT '物资名称（唯一）',
+    unit VARCHAR(20) DEFAULT NULL COMMENT '单位：支/盒/本',
+    price DECIMAL(16,2) DEFAULT 0 COMMENT '采购单价',
+    stock DECIMAL(16,2) NOT NULL DEFAULT 0 COMMENT '当前实时库存',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_material_name (material_name) -- 名称唯一，禁止重复物资
+) COMMENT '办公用品基础档案';
+
+select * from tb_stock_record;
+DROP TABLE IF EXISTS tb_stock_record;
+CREATE TABLE tb_stock_record (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    material_id BIGINT NOT NULL COMMENT '关联物资ID',
+    change_type VARCHAR(10) NOT NULL COMMENT 'IN入库 / OUT出库',
+    change_num DECIMAL(16,2) NOT NULL COMMENT '变动数量',
+    before_stock DECIMAL(16,2) NOT NULL COMMENT '变动前库存',
+    after_stock DECIMAL(16,2) NOT NULL COMMENT '变动后库存',
+    use_person VARCHAR(50) COMMENT '出库领用人，入库为空',
+    remark VARCHAR(500) COMMENT '备注说明',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间'
+) COMMENT '出入库台账流水';
 
 
-        SELECT
-            id,
-            pair_id AS pairId,
-            operate_account AS operateAccount,
-            operate_user_name AS operateUserName,
-            operate_type AS operateType,
-            content,
-            score,
-            file_urls AS fileUrls,
-            operate_time AS operateTime
-        FROM tb_pair_time_line
-        WHERE pair_id = 'TP20260706002'
-        ORDER BY operate_time DESC
+ SELECT
+        r.*,
+        m.material_name,
+        m.unit
+        FROM tb_stock_record r
+        LEFT JOIN tb_material m ON r.material_id = m.id;
 				
 				
-select * from tb_pair_time_line;
-truncate table tb_teacher_student_pair;
-truncate table tb_pair_time_line
-
-CREATE TABLE `tb_teacher_student_pair` (
-  `id` VARCHAR(32) NOT NULL COMMENT '结对主键TP单据编号',
-  `teacher_account` VARCHAR(32) NOT NULL COMMENT '师父员工工号',
-  `teacher_name` VARCHAR(50) NOT NULL COMMENT '师父姓名',
-  `teacher_level` TINYINT NOT NULL COMMENT '师父职等',
-  `student_account` VARCHAR(32) NOT NULL COMMENT '徒弟员工工号',
-  `student_name` VARCHAR(50) NOT NULL COMMENT '徒弟姓名',
-  `student_level` TINYINT NOT NULL COMMENT '徒弟职等',
-  `org_id` VARCHAR(32) NOT NULL COMMENT '所属机构ID',
-  `org_name` VARCHAR(100) NOT NULL COMMENT '机构名称',
-  `pair_status` VARCHAR(20) NOT NULL DEFAULT 'TRAINING' COMMENT '状态 TRAINING培养中 GRADUATED已出师',
-  `start_date` DATE NOT NULL COMMENT '结对生效日期',
-  `end_date` DATE NOT NULL COMMENT '12个月到期日',
-  `sign_file_url` VARCHAR(255) DEFAULT '' COMMENT '承诺书文件地址',
-  `create_account` VARCHAR(32) NOT NULL COMMENT '创建人工号',
-  `create_time` DATETIME NOT NULL DEFAULT NOW(),
-  `update_account` VARCHAR(32) DEFAULT '',
-  `update_time` DATETIME DEFAULT NOW() ON UPDATE NOW(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY uk_student_account (`student_account`),
-  UNIQUE KEY uk_teacher_account (`teacher_account`,`pair_status`) COMMENT '一师一徒约束：同一师父同时只能带1名在培徒弟'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='师徒结对主表';
-
-
-CREATE TABLE `tb_pair_time_line` (
-  `id` BIGINT AUTO_INCREMENT NOT NULL COMMENT '自增主键',
-  `pair_id` VARCHAR(32) NOT NULL COMMENT '关联结对TP单据编号',
-  `operate_account` VARCHAR(32) NOT NULL COMMENT '操作人工号',
-  `operate_user_name` VARCHAR(50) NOT NULL COMMENT '操作人姓名',
-  `operate_type` VARCHAR(20) NOT NULL COMMENT '记录类型 SIGN签约 STUDENT_SUBMIT徒弟提交 TEACHER_REVIEW师父审阅 EXAM_RECORD考核',
-  `content` TEXT COMMENT '文本内容',
-  `score` DECIMAL(5,1) DEFAULT NULL COMMENT '分数，审阅/考核使用',
-  `file_urls` TEXT COMMENT '附件json数组 [{fileName,fileUrl}]',
-  `operate_time` DATETIME NOT NULL DEFAULT NOW(),
-  PRIMARY KEY (`id`),
-  KEY idx_pair_id (`pair_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='师徒时间轴记录表';
-
-INSERT INTO tb_teacher_student_pair
-(id, teacher_account, teacher_name, teacher_level, student_account, student_name,
-student_level, org_id, org_name, pair_status, start_date, end_date, sign_file_url, create_account, create_time)
-VALUES
-('TP20260706001','T001','张导师',13,'S001','李明',15,
-'ORG_HZ001','杭州城西营业部','TRAINING','2026-07-01','2027-07-01','/upload/sign/20260706_001.pdf','ADMIN','2026-07-06 09:20:00'),
-
-('TP20260706002','T002','王导师',14,'S002','刘芳',14,
-'ORG_HZ001','杭州城西营业部','TRAINING','2026-06-15','2027-06-15','/upload/sign/20260706_002.pdf','ADMIN','2026-07-06 09:25:00'),
-
--- T001这条改为已结业，不再冲突
-('TP20260706003','T001','张导师',13,'S003','赵小天',12,
-'ORG_HZ002','杭州城东营业部','GRADUATED','2026-05-20','2027-05-20','/upload/sign/20260706_003.pdf','ADMIN','2026-07-06 09:30:00'),
-
-('TP20260706004','T003','陈导师',15,'S004','黄雨欣',13,
-'ORG_HZ001','杭州城西营业部','GRADUATED','2025-07-01','2026-07-01','/upload/sign/20260706_004.pdf','ADMIN','2026-07-06 09:35:00');
-
-INSERT INTO tb_pair_time_line
-(pair_id, operate_account, operate_user_name, operate_type, content, score, file_urls, operate_time)
-VALUES
--- TP20260706001 签约自动记录
-('TP20260706001','ADMIN','系统管理员','SIGN','师徒签约完成，12个月标准化带教周期生效',NULL,'[{"fileName":"结对协议书.pdf","fileUrl":"/upload/sign/20260706_001.pdf"}]','2026-07-06 09:20:00'),
--- 徒弟提交周报
-('TP20260706001','S001','李明','STUDENT_SUBMIT','本周学习基础信贷产品流程，对公授信材料区分存在疑问，下周需要导师重点讲解小微企业授信规则',NULL,'[{"fileName":"第1周学习笔记.docx","fileUrl":"/upload/file/note001.docx"}]','2026-07-08 18:10:00'),
--- 导师审阅点评
-('TP20260706001','T001','张导师','TEACHER_REVIEW','本周学习进度正常，附件附上小微企业授信区分对照表，下周实操练习客户准入判断，整体表现良好',88.5,'[{"fileName":"授信区分对照表.xlsx","fileUrl":"/upload/file/table001.xlsx"}]','2026-07-09 10:15:00'),
-
--- TP20260706002 签约记录
-('TP20260706002','ADMIN','系统管理员','SIGN','师徒签约完成，12个月标准化带教周期生效',NULL,'[{"fileName":"结对协议书.pdf","fileUrl":"/upload/sign/20260706_002.pdf"}]','2026-07-06 09:25:00'),
-('TP20260706002','S002','刘芳','STUDENT_SUBMIT','熟悉网点开户全流程，对风险告知环节把控不熟练，需要加强实操演练',NULL,NULL,'2026-07-10 17:40:00'),
-('TP20260706002','T002','王导师','TEACHER_REVIEW','下周安排网点跟班实操，重点练习开户风险双录，评分中等，多主动提问',76.0,NULL,'2026-07-11 09:05:00');
-
-
-CREATE TABLE staff_info (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '主键',
-    account VARCHAR(32) NOT NULL COMMENT '工号（唯一）',
-    name VARCHAR(50) NOT NULL COMMENT '姓名',
-    level INT NOT NULL COMMENT '职级',
-    work_year INT NOT NULL COMMENT '从业年限',
-    is_manager TINYINT NOT NULL DEFAULT 0 COMMENT '是否管理岗 0否 1是',
-    job_type VARCHAR(20) NOT NULL COMMENT '岗位类型',
-    org_id VARCHAR(32) NOT NULL COMMENT '机构ID',
-    org_name VARCHAR(64) NOT NULL COMMENT '机构名称',
-    create_time DATETIME DEFAULT NOW(),
-    UNIQUE KEY uk_account (account)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '员工信息表（导师来源表）';
-
-
-INSERT INTO staff_info
-(account, name, level, work_year, is_manager, job_type, org_id, org_name)
-VALUES
-('T001','张导师',13,5,1,'业务导师','ORG_HZ001','杭州城西营业部'),
-('T002','王导师',14,6,0,'信贷导师','ORG_HZ001','杭州城西营业部'),
-('T003','陈导师',15,8,1,'对公导师','ORG_HZ001','杭州城西营业部'),
-('T004','周导师',13,3,0,'零售导师','ORG_HZ001','杭州城西营业部'),
-('T005','吴导师',14,10,1,'风控导师','ORG_HZ001','杭州城西营业部'),
--- 下面几条不满足筛选条件，用于测试过滤逻辑
-('S001','李明学员',10,1,0,'实习生','ORG_HZ001','杭州城西营业部'),
-('T006','赵导师',13,1,0,'业务导师','ORG_HZ001','杭州城西营业部'),
-('T007','黄导师',14,7,0,'信贷导师','ORG_HZ002','杭州城东营业部');
-INSERT INTO staff_info
-(account, name, level, work_year, is_manager, job_type, org_id, org_name)
-VALUES
-('S001','李明',10,1,0,'实习柜员','ORG_HZ001','杭州城西营业部'),
-('S002','刘芳',11,2,0,'零售学员','ORG_HZ001','杭州城西营业部'),
-('S003','赵小天',9,1,0,'对公学员','ORG_HZ001','杭州城西营业部'),
-('S004','黄雨欣',12,2,0,'信贷学员','ORG_HZ001','杭州城西营业部');
-
-select  * from
-staff_info
-sel
+				 SELECT
+        r.*,
+        m.material_name,
+        m.unit
+        FROM tb_stock_record r
+        LEFT JOIN tb_material m ON r.material_id = m.id
+				
+				
+				CREATE TABLE `tb_meal_ticket`(
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `apply_name` varchar(100) DEFAULT NULL COMMENT '申请人姓名',
+  `apply_account` varchar(100) DEFAULT NULL COMMENT '申请人工号',
+  `dept_name` varchar(100) DEFAULT NULL COMMENT '申请部门名称',
+  `dept_code` varchar(50) DEFAULT NULL COMMENT '申请部门编码',
+  `handler_name` varchar(50) DEFAULT NULL COMMENT '部门经办人员姓名',
+  `handler_code` varchar(50) DEFAULT NULL COMMENT '部门经办人员工号',
+  `office_name` varchar(50) DEFAULT NULL COMMENT '办公室审批人姓名',
+  `office_code` varchar(50) DEFAULT NULL COMMENT '办公室审批人工号',
+  `office_handler_name` varchar(50) DEFAULT NULL COMMENT '办公室经办人员姓名',
+  `office_handler_code` varchar(50) DEFAULT NULL COMMENT '办公室经办人员工号',
+  `meal_date` DATE NOT NULL COMMENT '用餐日期',
+  `meal_location` varchar(20) DEFAULT NULL COMMENT '用餐地点',
+  `attend_num` int UNSIGNED DEFAULT NULL COMMENT '用餐人数',
+  `intern_name` varchar(20) DEFAULT NULL COMMENT '实习生姓名',
+  `meal_reason` varchar(100) DEFAULT NULL COMMENT '用餐事由',
+  `file_ids` varchar(500) DEFAULT NULL COMMENT '附件文件ID，多个用英文逗号分隔',
+  `flow_type` varchar(50) DEFAULT NULL COMMENT '流程类型',
+  `apply_date` DATE DEFAULT NULL COMMENT '申请日期',
+  `apply_no` varchar(50) DEFAULT NULL COMMENT '申请编号(唯一)',
+  `node` varchar(50) DEFAULT NULL COMMENT '当前审批节点',
+  `node_state` varchar(50) DEFAULT NULL COMMENT '节点审批状态',
+  `flow_status` varchar(50) DEFAULT NULL COMMENT '整体流程状态',
+  `status` varchar(50) DEFAULT NULL COMMENT '单据状态',
+  `start_time` DATETIME DEFAULT NULL COMMENT '用餐开始时间',
+  `end_time` DATETIME DEFAULT NULL COMMENT '用餐结束时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='餐券预约表';
